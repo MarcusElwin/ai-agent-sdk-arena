@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { MessageSquare, Bot, Send } from 'lucide-react';
 import { ApiResponse, Framework } from '../types';
 
 interface ChatBoxProps {
@@ -133,13 +134,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
 
   return (
     <div className="sleek-card chat-container" style={{ height: '100%' }}>
-      <div className="sleek-card-header flex items-center justify-between">
-        <div>AI Assistant</div>
-        <div className={`framework-badge ${getBadgeClass(framework)} selected`}>
+      <div className="sleek-card-header">
+        <span className="header-with-icon">
+          <Bot size={16} className="header-icon" />
+          AI Assistant
+        </span>
+        <div className={`framework-badge ${getBadgeClass(framework)} selected`} style={{ marginLeft: 'auto' }}>
           {getFrameworkName(framework)}
         </div>
       </div>
-      <div className="chat-messages" style={{ overflowY: 'auto', height: 'calc(100% - 124px)', padding: '1rem' }}>
+      <div className="chat-messages" style={{ overflowY: 'auto', height: 'calc(100% - 114px)', padding: '1rem' }}>
         {messages.map((message) => (
           <div 
             key={message.id} 
@@ -161,43 +165,41 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
         {loading && (
           <div className="chat-message bot-message">
             <div className="message-bubble bot-bubble">
-              <div className="typing-indicator">
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-                <span style={{ marginLeft: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>
-                  Creating your travel plan...
-                </span>
+              <div className="ai-thinking">
+                <div className="thinking-container">
+                  <Bot size={18} className="thinking-icon" />
+                  <div className="thinking-animation">
+                    <span className="thinking-text">Creating your travel plan</span>
+                    <span className="thinking-dots">
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="chat-input-container" style={{ 
-        padding: '16px', 
-        borderTop: '1px solid var(--border-subtle)', 
-        background: 'var(--bg-card)',
-        height: '74px',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <form onSubmit={handleSubmit} className="chat-form" style={{ width: '100%' }}>
+      <div className="chat-input-container">
+        <form onSubmit={handleSubmit} className="chat-form">
           <input
             type="text"
             placeholder="Ask a question about your trip plan..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="form-input"
-            style={{ height: '42px' }}
             disabled={loading}
           />
           <button 
             type="submit" 
             className="primary-button" 
-            style={{ width: 'auto', height: '42px' }}
+            style={{ width: 'auto' }}
             disabled={loading || input.trim() === ''}
           >
+            <Send size={16} style={{ marginRight: '4px' }} />
             Send
           </button>
         </form>

@@ -62,19 +62,20 @@ function App() {
       {/* Header */}
       <header className="app-header">
         <div className="container flex items-center justify-between">
-          <div>
+          <div className="flex items-center">
+            <div className="version-badge">v0.1.0</div>
             <h1 className="app-title">
               <span className="app-logo">
                 AI Travel Planner
-                <span className="app-logo-icon">🗺️</span>
-              </span>
-              <span className="welcome-text typing-animation">
-                Welcome back! Where are you going for your next{" "}
-                <span className="adventure-text">adventure{" "}</span>
-                <span className="globe-container">
+                <span className="globe-container" style={{ marginLeft: '8px', marginTop: '2px' }}>
                   <div className="globe"></div>
                   <div className="plane">✈️</div>
-                </span>?
+                </span>
+              </span>
+              <span className="welcome-text">
+                Welcome back! Where are you going for your next{" "}
+                <span className="text-accent">adventure</span>?
+                <span className="text-cursor"></span>
               </span>
             </h1>
           </div>
@@ -118,7 +119,7 @@ function App() {
       <div className="container">
         <div className="hidden-mobile" style={{ 
           display: 'flex', 
-          height: 'calc(100vh - 80px)',
+          height: 'calc(100vh - 60px)',
           gap: '1rem',
           marginTop: '0.5rem'
         }}>
