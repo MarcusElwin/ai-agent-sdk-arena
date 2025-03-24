@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ApiResponse, Framework } from '../types';
 
 interface ItineraryDisplayProps {
@@ -7,6 +7,8 @@ interface ItineraryDisplayProps {
 }
 
 const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framework }) => {
+  const [activeTab, setActiveTab] = useState<'transportation' | 'accommodation' | 'activities'>('transportation');
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -29,223 +31,323 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
     }
   };
 
-  return (
-    <div className="itinerary-display" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ margin: 0 }}>{itinerary.summary}</h2>
-        <span style={{
-          backgroundColor: getFrameworkColor(framework),
-          color: 'white',
-          padding: '5px 10px',
-          borderRadius: '4px',
-          fontSize: '14px'
-        }}>
-          {getFrameworkDisplayName(framework)}
-        </span>
-      </div>
+  // Get badge class based on framework
+  const getBadgeClass = (framework: Framework): string => {
+    switch (framework) {
+      case 'pydantic-ai':
+        return 'badge-pydantic';
+      case 'openai-agents':
+        return 'badge-openai';
+      case 'mastra-ai':
+        return 'badge-mastra';
+    }
+  };
 
-      {/* Trip Summary */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3>Trip Summary</h3>
-        <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
-          <div style={{ flex: 1, border: '1px solid #ddd', borderRadius: '4px', padding: '10px' }}>
-            <div style={{ fontWeight: 'bold' }}>Destination</div>
-            <div>{itinerary.destination}</div>
-          </div>
-          <div style={{ flex: 1, border: '1px solid #ddd', borderRadius: '4px', padding: '10px' }}>
-            <div style={{ fontWeight: 'bold' }}>Dates</div>
-            <div>{formatDate(itinerary.dates.start)} - {formatDate(itinerary.dates.end)}</div>
-          </div>
-          <div style={{ flex: 1, border: '1px solid #ddd', borderRadius: '4px', padding: '10px' }}>
-            <div style={{ fontWeight: 'bold' }}>Budget</div>
-            <div>
-              <div>Total: {formatCurrency(itinerary.budget.total)}</div>
-              <div>Spent: {formatCurrency(itinerary.budget.spent)}</div>
-              <div>Remaining: {formatCurrency(itinerary.budget.remaining)}</div>
-            </div>
-          </div>
+  const getFrameworkDisplayName = (framework: Framework): string => {
+    switch (framework) {
+      case 'pydantic-ai':
+        return 'Pydantic AI';
+      case 'openai-agents':
+        return 'OpenAI Agents SDK';
+      case 'mastra-ai':
+        return 'Mastra AI';
+      default:
+        return framework;
+    }
+  };
+
+  return (
+    <div className="sleek-card">
+      <div className="sleek-card-header flex items-center justify-between">
+        <div>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>{itinerary.summary}</h2>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+            {formatDate(itinerary.dates.start)} - {formatDate(itinerary.dates.end)}
+          </p>
+        </div>
+        <div className={`framework-badge ${getBadgeClass(framework)} selected`}>
+          {getFrameworkDisplayName(framework)}
         </div>
       </div>
-
-      {/* Transportation */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3>Transportation</h3>
-        {itinerary.transportation && (
-          <div>
-            <div style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '15px', marginBottom: '10px' }}>
-              <h4 style={{ margin: '0 0 10px 0' }}>Outbound Flight</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <div>
-                  <div style={{ fontWeight: 'bold' }}>{itinerary.transportation.outbound.airline} {itinerary.transportation.outbound.flightNumber}</div>
-                  <div>{formatDate(itinerary.transportation.outbound.departure.time.split('T')[0])}</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 'bold' }}>{itinerary.transportation.outbound.duration}</div>
-                  <div>Direct Flight</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 'bold' }}>{formatCurrency(itinerary.transportation.outbound.price)}</div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>Departure</div>
-                  <div>{itinerary.transportation.outbound.departure.airport}</div>
-                  <div>{new Date(itinerary.transportation.outbound.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '14px', color: '#666' }}>Arrival</div>
-                  <div>{itinerary.transportation.outbound.arrival.airport}</div>
-                  <div>{new Date(itinerary.transportation.outbound.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '15px' }}>
-              <h4 style={{ margin: '0 0 10px 0' }}>Return Flight</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <div>
-                  <div style={{ fontWeight: 'bold' }}>{itinerary.transportation.return.airline} {itinerary.transportation.return.flightNumber}</div>
-                  <div>{formatDate(itinerary.transportation.return.departure.time.split('T')[0])}</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 'bold' }}>{itinerary.transportation.return.duration}</div>
-                  <div>Direct Flight</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 'bold' }}>{formatCurrency(itinerary.transportation.return.price)}</div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>Departure</div>
-                  <div>{itinerary.transportation.return.departure.airport}</div>
-                  <div>{new Date(itinerary.transportation.return.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '14px', color: '#666' }}>Arrival</div>
-                  <div>{itinerary.transportation.return.arrival.airport}</div>
-                  <div>{new Date(itinerary.transportation.return.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                </div>
-              </div>
-            </div>
+      
+      <div className="sleek-card-content">
+        {/* Summary Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Destination</div>
+            <div style={{ fontWeight: '500' }}>{itinerary.destination}</div>
           </div>
-        )}
-      </div>
-
-      {/* Accommodation */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3>Accommodation</h3>
-        {itinerary.accommodation && (
-          <div style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <div>
-                <h4 style={{ margin: '0 0 5px 0' }}>{itinerary.accommodation.name}</h4>
-                <div>{itinerary.accommodation.address}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 'bold' }}>{formatCurrency(itinerary.accommodation.totalCost || itinerary.accommodation.total_cost)}</div>
-                <div>{itinerary.accommodation.nights} nights</div>
-              </div>
+          <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Total Budget</div>
+            <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.budget.total)}</div>
+          </div>
+          <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Remaining</div>
+            <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.budget.remaining)}</div>
+          </div>
+        </div>
+        
+        {/* Navigation Tabs */}
+        <div style={{ borderBottom: '1px solid var(--border-subtle)', display: 'flex', marginBottom: '1.5rem' }}>
+          <div 
+            style={{ 
+              paddingBottom: '0.5rem', 
+              marginRight: '1.5rem',
+              borderBottom: activeTab === 'transportation' ? '2px solid var(--primary-blue)' : '2px solid transparent',
+              color: activeTab === 'transportation' ? 'var(--primary-blue)' : 'var(--text-secondary)',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+            onClick={() => setActiveTab('transportation')}
+          >
+            Transportation
+          </div>
+          <div 
+            style={{ 
+              paddingBottom: '0.5rem', 
+              marginRight: '1.5rem',
+              borderBottom: activeTab === 'accommodation' ? '2px solid var(--primary-blue)' : '2px solid transparent',
+              color: activeTab === 'accommodation' ? 'var(--primary-blue)' : 'var(--text-secondary)',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+            onClick={() => setActiveTab('accommodation')}
+          >
+            Accommodation
+          </div>
+          <div 
+            style={{ 
+              paddingBottom: '0.5rem',
+              borderBottom: activeTab === 'activities' ? '2px solid var(--primary-blue)' : '2px solid transparent',
+              color: activeTab === 'activities' ? 'var(--primary-blue)' : 'var(--text-secondary)',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+            onClick={() => setActiveTab('activities')}
+          >
+            Activities
+          </div>
+        </div>
+        
+        {/* Content based on active tab */}
+        <div style={{ marginTop: '1rem' }}>
+          {activeTab === 'transportation' && (
+            <div className="space-y-4">
+              {itinerary.transportation && (
+                <>
+                  <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                      <h3 style={{ fontWeight: '600', margin: 0 }}>Outbound Flight</h3>
+                    </div>
+                    <div style={{ padding: '1rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div>
+                          <div style={{ fontWeight: '500' }}>
+                            {itinerary.transportation.outbound.airline} {itinerary.transportation.outbound.flightNumber || itinerary.transportation.outbound.flight_number}
+                          </div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                            {formatDate(itinerary.transportation.outbound.departure.time.split('T')[0])}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: '500' }}>{itinerary.transportation.outbound.duration}</div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Direct Flight</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.transportation.outbound.price)}</div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
+                        <div>
+                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Departure</div>
+                          <div>{itinerary.transportation.outbound.departure.airport}</div>
+                          <div>{new Date(itinerary.transportation.outbound.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Arrival</div>
+                          <div>{itinerary.transportation.outbound.arrival.airport}</div>
+                          <div>{new Date(itinerary.transportation.outbound.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                      <h3 style={{ fontWeight: '600', margin: 0 }}>Return Flight</h3>
+                    </div>
+                    <div style={{ padding: '1rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div>
+                          <div style={{ fontWeight: '500' }}>
+                            {itinerary.transportation.return.airline} {itinerary.transportation.return.flightNumber || itinerary.transportation.return.flight_number}
+                          </div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                            {formatDate(itinerary.transportation.return.departure.time.split('T')[0])}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: '500' }}>{itinerary.transportation.return.duration}</div>
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Direct Flight</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.transportation.return.price)}</div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
+                        <div>
+                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Departure</div>
+                          <div>{itinerary.transportation.return.departure.airport}</div>
+                          <div>{new Date(itinerary.transportation.return.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Arrival</div>
+                          <div>{itinerary.transportation.return.arrival.airport}</div>
+                          <div>{new Date(itinerary.transportation.return.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-              <div>Check-in: {formatDate(itinerary.accommodation.checkIn || itinerary.accommodation.check_in)}</div>
-              <div>Check-out: {formatDate(itinerary.accommodation.checkOut || itinerary.accommodation.check_out)}</div>
-            </div>
+          )}
+          
+          {activeTab === 'accommodation' && (
             <div>
-              <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>{itinerary.accommodation.type} Details</div>
-              <div>{itinerary.accommodation.roomType || itinerary.accommodation.room_type || itinerary.accommodation.propertyType || itinerary.accommodation.property_type}</div>
-              <div style={{ marginTop: '10px' }}>
-                <span style={{ fontWeight: 'bold' }}>Amenities: </span>
-                {itinerary.accommodation.amenities?.join(', ')}
-              </div>
-              {itinerary.accommodation.notes && (
-                <div style={{ marginTop: '10px' }}>
-                  <span style={{ fontWeight: 'bold' }}>Notes: </span>
-                  {itinerary.accommodation.notes.join(', ')}
+              {itinerary.accommodation && (
+                <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <h3 style={{ fontWeight: '600', margin: 0 }}>{itinerary.accommodation.name}</h3>
+                  </div>
+                  <div style={{ padding: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                      <div>
+                        <div style={{ fontWeight: '500' }}>{itinerary.accommodation.type}</div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{itinerary.accommodation.address}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontWeight: '600' }}>
+                          {formatCurrency(itinerary.accommodation.totalCost || itinerary.accommodation.total_cost)}
+                        </div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                          {itinerary.accommodation.nights} nights
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '2rem', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem', marginBottom: '1rem' }}>
+                      <div>
+                        <span style={{ fontWeight: '500' }}>Check-in: </span>
+                        {formatDate(itinerary.accommodation.checkIn || itinerary.accommodation.check_in)}
+                      </div>
+                      <div>
+                        <span style={{ fontWeight: '500' }}>Check-out: </span>
+                        {formatDate(itinerary.accommodation.checkOut || itinerary.accommodation.check_out)}
+                      </div>
+                    </div>
+                    
+                    <div style={{ fontSize: '0.875rem' }}>
+                      <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Room Type</div>
+                      <div style={{ marginBottom: '1rem' }}>
+                        {itinerary.accommodation.roomType || 
+                         itinerary.accommodation.room_type || 
+                         itinerary.accommodation.propertyType || 
+                         itinerary.accommodation.property_type}
+                      </div>
+                      
+                      <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Amenities</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+                        {itinerary.accommodation.amenities?.map((amenity: string, index: number) => (
+                          <span 
+                            key={index} 
+                            style={{ 
+                              background: 'rgba(255,255,255,0.05)', 
+                              borderRadius: '9999px', 
+                              padding: '0.25rem 0.75rem', 
+                              fontSize: '0.75rem',
+                              color: 'var(--text-secondary)',
+                              border: '1px solid var(--border-subtle)'
+                            }}
+                          >
+                            {amenity}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Activities */}
-      <div>
-        <h3>Activities & Experiences</h3>
-        {itinerary.activities && (
-          <div>
-            {/* Check if activities is an array or has an activities property */}
-            {Array.isArray(itinerary.activities.activities || itinerary.activities) ? (
-              (itinerary.activities.activities || itinerary.activities).map((activity: any, index: number) => (
-                <div key={index} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '15px', marginBottom: '10px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                    <h4 style={{ margin: 0 }}>{activity.name}</h4>
-                    {activity.price && <div style={{ fontWeight: 'bold' }}>{formatCurrency(activity.price)}</div>}
-                  </div>
-                  <div style={{ display: 'flex', gap: '10px', color: '#666', fontSize: '14px', marginBottom: '5px' }}>
-                    <div>{activity.category}</div>
-                    {activity.duration && <div>• {activity.duration}</div>}
-                    {activity.location && <div>• {activity.location}</div>}
-                  </div>
-                  <div>{activity.description}</div>
-                </div>
-              ))
-            ) : (
-              <div>No activities found</div>
-            )}
-
-            {/* Display restaurants if available */}
-            {Array.isArray(itinerary.activities.dining) && itinerary.activities.dining.length > 0 && (
-              <div style={{ marginTop: '20px' }}>
-                <h4>Recommended Dining</h4>
-                {itinerary.activities.dining.map((restaurant: any, index: number) => (
-                  <div key={index} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '15px', marginBottom: '10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                      <h4 style={{ margin: 0 }}>{restaurant.name}</h4>
-                      <div>{restaurant.price_range}</div>
+          )}
+          
+          {activeTab === 'activities' && (
+            <div className="space-y-4">
+              {itinerary.activities && Array.isArray(itinerary.activities.activities || itinerary.activities) && (
+                (itinerary.activities.activities || itinerary.activities).map((activity: any, index: number) => (
+                  <div key={index} style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
+                      <h3 style={{ fontWeight: '600', margin: 0 }}>{activity.name}</h3>
+                      {activity.price && (
+                        <div style={{ fontWeight: '500' }}>{formatCurrency(activity.price)}</div>
+                      )}
                     </div>
-                    <div style={{ display: 'flex', gap: '10px', color: '#666', fontSize: '14px', marginBottom: '5px' }}>
-                      <div>{restaurant.cuisine} Cuisine</div>
-                      <div>• {restaurant.location}</div>
+                    <div style={{ padding: '1rem' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                        <span 
+                          style={{ 
+                            background: 'rgba(255,255,255,0.05)', 
+                            borderRadius: '9999px', 
+                            padding: '0.25rem 0.75rem', 
+                            fontSize: '0.75rem',
+                            color: 'var(--text-secondary)',
+                            border: '1px solid var(--border-subtle)'
+                          }}
+                        >
+                          {activity.category}
+                        </span>
+                        {activity.duration && (
+                          <span 
+                            style={{ 
+                              background: 'rgba(255,255,255,0.05)', 
+                              borderRadius: '9999px', 
+                              padding: '0.25rem 0.75rem', 
+                              fontSize: '0.75rem',
+                              color: 'var(--text-secondary)',
+                              border: '1px solid var(--border-subtle)'
+                            }}
+                          >
+                            {activity.duration}
+                          </span>
+                        )}
+                        {activity.location && (
+                          <span 
+                            style={{ 
+                              background: 'rgba(255,255,255,0.05)', 
+                              borderRadius: '9999px', 
+                              padding: '0.25rem 0.75rem', 
+                              fontSize: '0.75rem',
+                              color: 'var(--text-secondary)',
+                              border: '1px solid var(--border-subtle)'
+                            }}
+                          >
+                            {activity.location}
+                          </span>
+                        )}
+                      </div>
+                      <p style={{ fontSize: '0.875rem', margin: 0 }}>{activity.description}</p>
                     </div>
-                    <div>{restaurant.description}</div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
-
-// Helper functions
-function getFrameworkColor(framework: Framework): string {
-  switch (framework) {
-    case 'pydantic-ai':
-      return '#2ecc71';
-    case 'openai-agents':
-      return '#3498db';
-    case 'mastra-ai':
-      return '#9b59b6';
-    default:
-      return '#95a5a6';
-  }
-}
-
-function getFrameworkDisplayName(framework: Framework): string {
-  switch (framework) {
-    case 'pydantic-ai':
-      return 'Pydantic AI';
-    case 'openai-agents':
-      return 'OpenAI Agents SDK';
-    case 'mastra-ai':
-      return 'Mastra AI';
-    default:
-      return framework;
-  }
-}
 
 export default ItineraryDisplay;

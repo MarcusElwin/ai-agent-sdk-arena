@@ -24,13 +24,15 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
     if (name.includes('.')) {
       // Handle nested preferences
       const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof TravelRequest],
-          [child]: value
-        }
-      }));
+      if (parent === 'preferences') {
+        setFormData(prev => ({
+          ...prev,
+          preferences: {
+            ...prev.preferences,
+            [child]: value
+          }
+        }));
+      }
     } else {
       // Handle top-level fields
       setFormData(prev => ({
@@ -72,129 +74,138 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="travel-form" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-      <h2>Plan Your Trip</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="destination" style={{ display: 'block', marginBottom: '5px' }}>Destination</label>
-          <input
-            type="text"
-            id="destination"
-            name="destination"
-            value={formData.destination}
-            onChange={handleChange}
-            required
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-            placeholder="e.g., Paris, Tokyo, New York"
-          />
-        </div>
+    <div className="sleek-card" style={{ height: '100%' }}>
+      <div className="sleek-card-header">Plan Your Trip</div>
+      <div className="sleek-card-content" style={{ 
+        overflow: 'auto', 
+        height: 'calc(100% - 124px)', /* Adjusted to account for footer height */
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <div className="form-content" style={{ flex: '1 1 auto', overflow: 'auto', paddingBottom: '16px' }}>
+            <div className="form-field">
+              <label htmlFor="destination" className="form-label">Destination</label>
+              <input
+                type="text"
+                id="destination"
+                name="destination"
+                value={formData.destination}
+                onChange={handleChange}
+                required
+                placeholder="e.g., Paris, Tokyo, New York"
+                className="form-input"
+              />
+            </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="preferences.origin" style={{ display: 'block', marginBottom: '5px' }}>Origin</label>
-          <input
-            type="text"
-            id="preferences.origin"
-            name="preferences.origin"
-            value={formData.preferences.origin}
-            onChange={handleChange}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-            placeholder="e.g., San Francisco"
-          />
-        </div>
+            <div className="form-field">
+              <label htmlFor="preferences.origin" className="form-label">Origin</label>
+              <input
+                type="text"
+                id="preferences.origin"
+                name="preferences.origin"
+                value={formData.preferences.origin}
+                onChange={handleChange}
+                placeholder="e.g., San Francisco"
+                className="form-input"
+              />
+            </div>
 
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-          <div style={{ flex: 1 }}>
-            <label htmlFor="startDate" style={{ display: 'block', marginBottom: '5px' }}>Start Date</label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label htmlFor="endDate" style={{ display: 'block', marginBottom: '5px' }}>End Date</label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-            />
-          </div>
-        </div>
-
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="budget" style={{ display: 'block', marginBottom: '5px' }}>Budget (USD)</label>
-          <input
-            type="number"
-            id="budget"
-            name="budget"
-            value={formData.budget}
-            onChange={handleChange}
-            required
-            min="100"
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="preferences.accommodationType" style={{ display: 'block', marginBottom: '5px' }}>Accommodation Type</label>
-          <select
-            id="preferences.accommodationType"
-            name="preferences.accommodationType"
-            value={formData.preferences.accommodationType}
-            onChange={handleChange}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          >
-            <option value="hotel">Hotel</option>
-            <option value="airbnb">Airbnb</option>
-            <option value="hostel">Hostel</option>
-            <option value="resort">Resort</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Activities Preferences</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {['sightseeing', 'dining', 'adventure', 'relaxation', 'culture', 'shopping'].map(activity => (
-              <div key={activity} style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-field">
+                <label htmlFor="startDate" className="form-label">Start Date</label>
                 <input
-                  type="checkbox"
-                  id={`activity-${activity}`}
-                  name="activities"
-                  value={activity}
-                  checked={formData.preferences.activities?.includes(activity) || false}
-                  onChange={handleActivitiesChange}
-                  style={{ marginRight: '5px' }}
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  required
+                  className="form-input"
                 />
-                <label htmlFor={`activity-${activity}`}>{activity.charAt(0).toUpperCase() + activity.slice(1)}</label>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="form-field">
+                <label htmlFor="endDate" className="form-label">End Date</label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+            </div>
 
-        <button
-          type="submit"
-          style={{
-            backgroundColor: '#4c8bf5',
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '100%'
-          }}
-        >
-          Generate Travel Plan
-        </button>
-      </form>
+            <div className="form-field">
+              <label htmlFor="budget" className="form-label">Budget (USD)</label>
+              <input
+                type="number"
+                id="budget"
+                name="budget"
+                value={formData.budget}
+                onChange={handleChange}
+                required
+                min="100"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="preferences.accommodationType" className="form-label">Accommodation Type</label>
+              <select
+                id="preferences.accommodationType"
+                name="preferences.accommodationType"
+                value={formData.preferences.accommodationType}
+                onChange={handleChange}
+                className="form-input"
+              >
+                <option value="hotel">Hotel</option>
+                <option value="airbnb">Airbnb</option>
+                <option value="hostel">Hostel</option>
+                <option value="resort">Resort</option>
+              </select>
+            </div>
+
+            <div className="form-field">
+              <span className="form-label">Activities Preferences</span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                {['sightseeing', 'dining', 'adventure', 'relaxation', 'culture', 'shopping'].map(activity => (
+                  <div key={activity} style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      id={`activity-${activity}`}
+                      name="activities"
+                      value={activity}
+                      checked={formData.preferences.activities?.includes(activity) || false}
+                      onChange={handleActivitiesChange}
+                      style={{ marginRight: '0.5rem' }}
+                    />
+                    <label htmlFor={`activity-${activity}`} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                      {activity.charAt(0).toUpperCase() + activity.slice(1)}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-footer" style={{ 
+            flex: '0 0 auto',
+            padding: '16px', 
+            borderTop: '1px solid var(--border-subtle)', 
+            background: 'var(--bg-card)',
+            height: '74px',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <button type="submit" className="primary-button" style={{ height: '42px', width: '100%' }}>
+              Generate Travel Plan
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

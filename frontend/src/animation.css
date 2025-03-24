@@ -1,0 +1,121 @@
+@keyframes delay {
+  0%, 40%, 100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.5);
+  }
+}
+
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Typing animation */
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--primary-blue);
+  animation: 
+    typing 3.5s steps(40, end) 0.5s forwards,
+    blink-caret .75s step-end infinite;
+  width: 0;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--primary-blue) }
+}
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Globe Animation */
+.globe-container {
+  display: inline-block;
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  margin-left: 0.4em;
+  margin-right: 0.2em;
+}
+
+.globe {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  animation: rotate-globe 4s linear infinite;
+}
+
+.globe::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+.globe::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -5%;
+  width: 110%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(30deg);
+}
+
+.plane {
+  position: absolute;
+  width: 0.5em;
+  height: 0.5em;
+  font-size: 0.7em;
+  transform-origin: 0.7em 0.7em;
+  animation: fly-plane 4s linear infinite;
+  top: -0.15em;
+  left: -0.15em;
+}
+
+@keyframes rotate-globe {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fly-plane {
+  0% {
+    transform: rotate(0deg) translateX(0.8em) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0.8em) rotate(-360deg);
+  }
+}
