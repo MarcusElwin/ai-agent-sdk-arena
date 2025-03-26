@@ -4,6 +4,7 @@ import FrameworkSelector from './components/FrameworkSelector';
 import ItineraryDisplay from './components/ItineraryDisplay';
 import ChatBox from './components/ChatBox';
 import { ApiResponse, Framework, TravelRequest } from './types';
+import { planTripWithMastra } from './lib/mastraClient';
 
 function App() {
   const [selectedFramework, setSelectedFramework] = useState<Framework>('pydantic-ai');
@@ -23,26 +24,33 @@ function App() {
     setError(null);
     
     try {
-      // API endpoints for each framework
-      const endpoints = {
-        'pydantic-ai': 'http://localhost:8000/plan',
-        'openai-agents': 'http://localhost:8001/plan',
-        'mastra-ai': 'http://localhost:8002/plan'
-      };
+      let data;
       
-      const response = await fetch(endpoints[selectedFramework], {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (selectedFramework === 'mastra-ai') {
+        // Use Mastra client directly
+        data = await planTripWithMastra(formData);
+      } else {
+        // API endpoints for other frameworks
+        const endpoints = {
+          'pydantic-ai': 'http://localhost:8000/plan',
+          'openai-agents': 'http://localhost:8001/plan'
+        };
+        
+        const response = await fetch(endpoints[selectedFramework], {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        
+        data = await response.json();
       }
       
-      const data = await response.json();
       setItinerary(data);
       
       // Switch to chat tab on mobile when we get results

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Bot, Send } from 'lucide-react';
 import { ApiResponse, Framework } from '../types';
+import { sendChatMessageWithMastra } from '../lib/mastraClient';
 
 interface ChatBoxProps {
   framework: Framework;
@@ -94,9 +95,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
     }
   }, [error]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() === '') return;
+    if (input.trim() === '' || loading) return;
 
     // Add user message
     const userMessage: Message = {
@@ -107,18 +108,91 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
     };
     
     setMessages(prev => [...prev, userMessage]);
+    const userInput = input;
     setInput('');
+    
+    // Create a temporary loading message
+    const loadingId = (Date.now() + 1).toString();
+    setMessages(prev => [...prev, {
+      id: loadingId,
+      type: 'system',
+      content: (
+        <div className="ai-thinking">
+          <div className="thinking-container">
+            <Bot size={18} className="thinking-icon" />
+            <div className="thinking-animation">
+              <span className="thinking-text">Thinking</span>
+              <span className="thinking-dots">
+                <span className="dot"></span>
+                <span className="dot"></span>
+                <span className="dot"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      ),
+      timestamp: new Date(),
+    }]);
 
-    // Simulate assistant response
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'assistant',
-        content: "Please use the form to plan your trip. Once you submit the form, I'll create a detailed travel itinerary for you.",
+    try {
+      const assistantMessageId = (Date.now() + 2).toString();
+      
+      if (framework === 'mastra-ai') {
+        // Remove the loading message
+        setMessages(prev => prev.filter(msg => msg.id !== loadingId));
+        
+        // Add an empty message that will be updated with streaming content
+        setMessages(prev => [...prev, {
+          id: assistantMessageId,
+          type: 'assistant',
+          content: '',
+          timestamp: new Date(),
+        }]);
+        
+        // Use Mastra client with streaming for chat
+        await sendChatMessageWithMastra(
+          userInput, 
+          itinerary,
+          (streamedText) => {
+            // Update the message content with each chunk received
+            setMessages(prev => 
+              prev.map(msg => 
+                msg.id === assistantMessageId 
+                  ? { ...msg, content: streamedText } 
+                  : msg
+              )
+            );
+          }
+        );
+      } else {
+        // Get an actual response for non-Mastra frameworks
+        // This could be expanded to use other framework clients
+        const responseContent = await sendChatMessageWithMastra(userInput, itinerary);
+        
+        // Remove the loading message
+        setMessages(prev => prev.filter(msg => msg.id !== loadingId));
+        
+        // Add the assistant response
+        const assistantMessage: Message = {
+          id: assistantMessageId,
+          type: 'assistant',
+          content: responseContent,
+          timestamp: new Date(),
+        };
+        
+        setMessages(prev => [...prev, assistantMessage]);
+      }
+    } catch (error) {
+      // Remove the loading message and show error
+      setMessages(prev => prev.filter(msg => msg.id !== loadingId));
+      
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 2).toString(),
+        type: 'system',
+        content: `Error: ${error instanceof Error ? error.message : "Failed to get response"}`,
         timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, assistantMessage]);
-    }, 1000);
+      }]);
+    }
   };
 
   function getDaysBetween(startDate: string, endDate: string): number {
