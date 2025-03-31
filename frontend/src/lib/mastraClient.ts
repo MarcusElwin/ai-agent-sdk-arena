@@ -7,8 +7,8 @@ export const mastraClient = new MastraClient({
 
 export const planTripWithMastra = async (travelRequest: TravelRequest): Promise<ApiResponse> => {
   try {
-    // Get a reference to the travel planner agent
-    const agent = mastraClient.getAgent("weatherAgent"); // Update with your actual agent ID
+    // Get a reference to the coordinator agent (or weather agent as fallback for backward compatibility)
+    const agent = mastraClient.getAgent("coordinatorAgent") || mastraClient.getAgent("weatherAgent");
     
     // Create a prompt with instructions about the expected output format
     const prompt = `You are a travel planning assistant. Create a complete travel itinerary in JSON format.
@@ -139,8 +139,8 @@ export const sendChatMessageWithMastra = async (
   onChunk?: (chunk: string) => void
 ): Promise<string> => {
   try {
-    // Get a reference to the agent
-    const agent = mastraClient.getAgent("weatherAgent");
+    // Get a reference to the coordinator agent (or weather agent as fallback)
+    const agent = mastraClient.getAgent("coordinatorAgent") || mastraClient.getAgent("weatherAgent");
     
     // Add context about the itinerary if available
     let prompt = message;
