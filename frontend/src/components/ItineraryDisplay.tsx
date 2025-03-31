@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MapPin, Calendar, DollarSign, Clock, ExternalLink, MapIcon } from 'lucide-react';
 import { ApiResponse, Framework } from '../types';
 
 interface ItineraryDisplayProps {
@@ -56,12 +57,21 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
     }
   };
 
+  // Use console.log to debug itinerary structure
+  React.useEffect(() => {
+    console.log("Itinerary data in ItineraryDisplay:", itinerary);
+  }, [itinerary]);
+
   return (
     <div className="sleek-card">
       <div className="sleek-card-header flex items-center justify-between">
         <div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>{itinerary.summary}</h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <MapIcon size={20} />
+            {itinerary.summary}
+          </h2>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Calendar size={14} />
             {formatDate(itinerary.dates.start)} - {formatDate(itinerary.dates.end)}
           </p>
         </div>
@@ -74,15 +84,24 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
         {/* Summary Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
           <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Destination</div>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <MapPin size={14} />
+              Destination
+            </div>
             <div style={{ fontWeight: '500' }}>{itinerary.destination}</div>
           </div>
           <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Total Budget</div>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <DollarSign size={14} />
+              Total Budget
+            </div>
             <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.budget.total)}</div>
           </div>
           <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.375rem', padding: '0.75rem' }}>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Remaining</div>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <DollarSign size={14} />
+              Remaining
+            </div>
             <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.budget.remaining)}</div>
           </div>
         </div>
@@ -96,10 +115,14 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
               borderBottom: activeTab === 'transportation' ? '2px solid var(--primary-blue)' : '2px solid transparent',
               color: activeTab === 'transportation' ? 'var(--primary-blue)' : 'var(--text-secondary)',
               fontWeight: '500',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
             onClick={() => setActiveTab('transportation')}
           >
+            <ExternalLink size={16} />
             Transportation
           </div>
           <div 
@@ -109,10 +132,14 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
               borderBottom: activeTab === 'accommodation' ? '2px solid var(--primary-blue)' : '2px solid transparent',
               color: activeTab === 'accommodation' ? 'var(--primary-blue)' : 'var(--text-secondary)',
               fontWeight: '500',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
             onClick={() => setActiveTab('accommodation')}
           >
+            <MapPin size={16} />
             Accommodation
           </div>
           <div 
@@ -121,10 +148,14 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
               borderBottom: activeTab === 'activities' ? '2px solid var(--primary-blue)' : '2px solid transparent',
               color: activeTab === 'activities' ? 'var(--primary-blue)' : 'var(--text-secondary)',
               fontWeight: '500',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
             onClick={() => setActiveTab('activities')}
           >
+            <Clock size={16} />
             Activities
           </div>
         </div>
@@ -134,83 +165,81 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
           {activeTab === 'transportation' && (
             <div className="space-y-4">
               {itinerary.transportation && (
-                <>
-                  <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
-                      <h3 style={{ fontWeight: '600', margin: 0 }}>Outbound Flight</h3>
-                    </div>
-                    <div style={{ padding: '1rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <div>
-                          <div style={{ fontWeight: '500' }}>
-                            {itinerary.transportation.outbound.airline} {itinerary.transportation.outbound.flightNumber || itinerary.transportation.outbound.flight_number}
-                          </div>
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                            {formatDate(itinerary.transportation.outbound.departure.time.split('T')[0])}
-                          </div>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontWeight: '500' }}>{itinerary.transportation.outbound.duration}</div>
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Direct Flight</div>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.transportation.outbound.price)}</div>
-                        </div>
+                <div>
+                  {/* Outbound Flight */}
+                  {itinerary.transportation.outbound && (
+                    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden', marginBottom: '1rem' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <h3 style={{ fontWeight: '600', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <ExternalLink size={16} />
+                          Outbound Flight
+                        </h3>
                       </div>
-                      
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
-                        <div>
-                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Departure</div>
-                          <div>{itinerary.transportation.outbound.departure.airport}</div>
-                          <div>{new Date(itinerary.transportation.outbound.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Arrival</div>
-                          <div>{itinerary.transportation.outbound.arrival.airport}</div>
-                          <div>{new Date(itinerary.transportation.outbound.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                      <div style={{ padding: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                          <div>
+                            <div style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <MapPin size={14} />
+                              Flight to {itinerary.destination}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <Calendar size={14} />
+                              {formatDate(itinerary.dates.start)}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}>
+                              <Clock size={14} />
+                              Duration: {itinerary.transportation.outbound?.duration || 'Details in itinerary'}
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: '500', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
+                              <DollarSign size={14} />
+                              {itinerary.transportation.outbound?.cost ? formatCurrency(itinerary.transportation.outbound.cost) : 'Included'}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   
-                  <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
-                      <h3 style={{ fontWeight: '600', margin: 0 }}>Return Flight</h3>
-                    </div>
-                    <div style={{ padding: '1rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <div>
-                          <div style={{ fontWeight: '500' }}>
-                            {itinerary.transportation.return.airline} {itinerary.transportation.return.flightNumber || itinerary.transportation.return.flight_number}
+                  {/* Return Flight */}
+                  {(itinerary.transportation.inbound || itinerary.transportation.return) && (
+                    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <h3 style={{ fontWeight: '600', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <ExternalLink size={16} />
+                          Return Flight
+                        </h3>
+                      </div>
+                      <div style={{ padding: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                          <div>
+                            <div style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <MapPin size={14} />
+                              Return flight from {itinerary.destination}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <Calendar size={14} />
+                              {formatDate(itinerary.dates.end)}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}>
+                              <Clock size={14} />
+                              Duration: {(itinerary.transportation.inbound?.duration || itinerary.transportation.return?.duration) || 'Details in itinerary'}
+                            </div>
                           </div>
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                            {formatDate(itinerary.transportation.return.departure.time.split('T')[0])}
+                          <div>
+                            <div style={{ fontWeight: '500', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
+                              <DollarSign size={14} />
+                              {(itinerary.transportation.inbound?.cost || itinerary.transportation.return?.cost) 
+                                ? formatCurrency(itinerary.transportation.inbound?.cost || itinerary.transportation.return?.cost) 
+                                : 'Included'}
+                            </div>
                           </div>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontWeight: '500' }}>{itinerary.transportation.return.duration}</div>
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Direct Flight</div>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontWeight: '500' }}>{formatCurrency(itinerary.transportation.return.price)}</div>
                         </div>
                       </div>
-                      
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
-                        <div>
-                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Departure</div>
-                          <div>{itinerary.transportation.return.departure.airport}</div>
-                          <div>{new Date(itinerary.transportation.return.departure.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Arrival</div>
-                          <div>{itinerary.transportation.return.arrival.airport}</div>
-                          <div>{new Date(itinerary.transportation.return.arrival.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -220,63 +249,97 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
               {itinerary.accommodation && (
                 <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
                   <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>
-                    <h3 style={{ fontWeight: '600', margin: 0 }}>{itinerary.accommodation.name}</h3>
+                    <h3 style={{ fontWeight: '600', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <MapIcon size={16} />
+                      {itinerary.accommodation.name || itinerary.accommodation.hotel || 'Accommodation'}
+                    </h3>
                   </div>
                   <div style={{ padding: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                       <div>
-                        <div style={{ fontWeight: '500' }}>{itinerary.accommodation.type}</div>
-                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{itinerary.accommodation.address}</div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <MapPin size={14} />
+                          {itinerary.accommodation.address || `${itinerary.destination}`}
+                        </div>
+                        {itinerary.accommodation.description && (
+                          <div style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                            {itinerary.accommodation.description}
+                          </div>
+                        )}
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontWeight: '600' }}>
-                          {formatCurrency(itinerary.accommodation.totalCost || itinerary.accommodation.total_cost)}
+                        <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.25rem' }}>
+                          <DollarSign size={14} />
+                          {itinerary.accommodation.cost ? formatCurrency(itinerary.accommodation.cost) : 'See details in itinerary'}
                         </div>
-                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                          {itinerary.accommodation.nights} nights
-                        </div>
+                        {itinerary.accommodation.nights && (
+                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                            {itinerary.accommodation.nights} nights
+                          </div>
+                        )}
                       </div>
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '2rem', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '2rem', fontSize: '0.875rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
                       <div>
-                        <span style={{ fontWeight: '500' }}>Check-in: </span>
-                        {formatDate(itinerary.accommodation.checkIn || itinerary.accommodation.check_in)}
+                        <span style={{ fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Calendar size={14} />
+                          Check-in:
+                        </span>{' '}
+                        {formatDate(itinerary.dates.start)}
                       </div>
                       <div>
-                        <span style={{ fontWeight: '500' }}>Check-out: </span>
-                        {formatDate(itinerary.accommodation.checkOut || itinerary.accommodation.check_out)}
+                        <span style={{ fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Calendar size={14} />
+                          Check-out:
+                        </span>{' '}
+                        {formatDate(itinerary.dates.end)}
                       </div>
                     </div>
                     
-                    <div style={{ fontSize: '0.875rem' }}>
-                      <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Room Type</div>
-                      <div style={{ marginBottom: '1rem' }}>
-                        {itinerary.accommodation.roomType || 
-                         itinerary.accommodation.room_type || 
-                         itinerary.accommodation.propertyType || 
-                         itinerary.accommodation.property_type}
+                    {itinerary.accommodation.amenities && (
+                      <div style={{ marginTop: '0.75rem', fontSize: '0.875rem' }}>
+                        <div style={{ fontWeight: '500', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Clock size={14} />
+                          Amenities:
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          {Array.isArray(itinerary.accommodation.amenities) ? 
+                            itinerary.accommodation.amenities.map((amenity: string, index: number) => (
+                              <span key={index} style={{ 
+                                fontSize: '0.75rem', 
+                                padding: '0.25rem 0.5rem', 
+                                background: 'rgba(255,255,255,0.05)', 
+                                borderRadius: '1rem',
+                                border: '1px solid var(--border-subtle)'
+                              }}>
+                                {amenity}
+                              </span>
+                            )) : 
+                            <span>{itinerary.accommodation.amenities}</span>
+                          }
+                        </div>
                       </div>
-                      
-                      <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Amenities</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
-                        {itinerary.accommodation.amenities?.map((amenity: string, index: number) => (
-                          <span 
-                            key={index} 
-                            style={{ 
-                              background: 'rgba(255,255,255,0.05)', 
-                              borderRadius: '9999px', 
-                              padding: '0.25rem 0.75rem', 
-                              fontSize: '0.75rem',
-                              color: 'var(--text-secondary)',
-                              border: '1px solid var(--border-subtle)'
-                            }}
-                          >
-                            {amenity}
-                          </span>
-                        ))}
+                    )}
+                    
+                    {itinerary.accommodation.url && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <button
+                          className="secondary-button"
+                          style={{ 
+                            fontSize: '0.75rem',
+                            padding: '0.375rem 0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem'
+                          }}
+                          onClick={() => window.open(itinerary.accommodation.url, '_blank')}
+                        >
+                          <ExternalLink size={14} />
+                          View Details
+                        </button>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -285,62 +348,129 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, framewor
           
           {activeTab === 'activities' && (
             <div className="space-y-4">
-              {itinerary.activities && Array.isArray(itinerary.activities.activities || itinerary.activities) && (
-                (itinerary.activities.activities || itinerary.activities).map((activity: any, index: number) => (
-                  <div key={index} style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
-                      <h3 style={{ fontWeight: '600', margin: 0 }}>{activity.name}</h3>
-                      {activity.price && (
-                        <div style={{ fontWeight: '500' }}>{formatCurrency(activity.price)}</div>
-                      )}
-                    </div>
-                    <div style={{ padding: '1rem' }}>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                        <span 
-                          style={{ 
-                            background: 'rgba(255,255,255,0.05)', 
-                            borderRadius: '9999px', 
-                            padding: '0.25rem 0.75rem', 
-                            fontSize: '0.75rem',
-                            color: 'var(--text-secondary)',
-                            border: '1px solid var(--border-subtle)'
-                          }}
-                        >
-                          {activity.category}
-                        </span>
-                        {activity.duration && (
-                          <span 
-                            style={{ 
-                              background: 'rgba(255,255,255,0.05)', 
-                              borderRadius: '9999px', 
-                              padding: '0.25rem 0.75rem', 
-                              fontSize: '0.75rem',
-                              color: 'var(--text-secondary)',
-                              border: '1px solid var(--border-subtle)'
-                            }}
-                          >
-                            {activity.duration}
-                          </span>
-                        )}
-                        {activity.location && (
-                          <span 
-                            style={{ 
-                              background: 'rgba(255,255,255,0.05)', 
-                              borderRadius: '9999px', 
-                              padding: '0.25rem 0.75rem', 
-                              fontSize: '0.75rem',
-                              color: 'var(--text-secondary)',
-                              border: '1px solid var(--border-subtle)'
-                            }}
-                          >
-                            {activity.location}
-                          </span>
+              {itinerary.activities && itinerary.activities.activities && (
+                <>
+                  {itinerary.activities.activities.map((activity: any, index: number) => (
+                    <div key={index} style={{ border: '1px solid var(--border-subtle)', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
+                        <h3 style={{ fontWeight: '600', margin: 0, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Clock size={14} /> 
+                          {activity.name}
+                        </h3>
+                        {activity.cost && (
+                          <div style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <DollarSign size={14} />
+                            {formatCurrency(activity.cost)}
+                          </div>
                         )}
                       </div>
-                      <p style={{ fontSize: '0.875rem', margin: 0 }}>{activity.description}</p>
+                      <div style={{ padding: '1rem' }}>
+                        <p style={{ fontSize: '0.875rem', margin: '0' }}>{activity.description}</p>
+                        
+                        {/* Activity action buttons */}
+                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                          <button
+                            className="secondary-button"
+                            style={{ 
+                              fontSize: '0.75rem',
+                              padding: '0.375rem 0.75rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.25rem'
+                            }}
+                            onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' ' + itinerary.destination)}`, '_blank')}
+                          >
+                            <MapIcon size={14} />
+                            View on Map
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  ))}
+                </>
+              )}
+              
+              {/* Weather info card at the bottom if available */}
+              {itinerary.weather && (
+                <div style={{ 
+                  border: '1px solid var(--border-subtle)', 
+                  borderRadius: '0.5rem', 
+                  overflow: 'hidden',
+                  background: 'linear-gradient(to right, rgba(25, 118, 210, 0.05), rgba(25, 118, 210, 0.1))'
+                }}>
+                  <div style={{ padding: '1rem' }}>
+                    <h3 style={{ fontWeight: '600', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Calendar size={16} />
+                      Weather Information
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Clock size={14} />
+                      {itinerary.weather.description || 
+                       `During your stay, ${itinerary.destination} is expected to have varied weather.`}
+                    </p>
+                    
+                    {itinerary.weather.temperature && (
+                      <div style={{ 
+                        display: 'flex',
+                        gap: '1rem',
+                        marginTop: '0.75rem',
+                        fontSize: '0.875rem',
+                        flexWrap: 'wrap'
+                      }}>
+                        <div style={{ 
+                          padding: '0.5rem 0.75rem', 
+                          background: 'rgba(25, 118, 210, 0.1)', 
+                          borderRadius: '0.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem'
+                        }}>
+                          <MapIcon size={14} />
+                          <span style={{ fontWeight: '500' }}>
+                            {typeof itinerary.weather.temperature === 'object' 
+                              ? `Temperature: ${itinerary.weather.temperature.min}°-${itinerary.weather.temperature.max}°`
+                              : `Temperature: ${itinerary.weather.temperature}°`}
+                          </span>
+                        </div>
+                        
+                        {itinerary.weather.precipitation && (
+                          <div style={{ 
+                            padding: '0.5rem 0.75rem', 
+                            background: 'rgba(25, 118, 210, 0.1)', 
+                            borderRadius: '0.25rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                          }}>
+                            <ExternalLink size={14} />
+                            <span style={{ fontWeight: '500' }}>
+                              Precipitation: {itinerary.weather.precipitation}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {itinerary.weather.url && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <button
+                          className="secondary-button"
+                          style={{ 
+                            fontSize: '0.75rem',
+                            padding: '0.375rem 0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem'
+                          }}
+                          onClick={() => window.open(itinerary.weather.url, '_blank')}
+                        >
+                          <ExternalLink size={14} />
+                          View Detailed Weather
+                        </button>
+                      </div>
+                    )}
                   </div>
-                ))
+                </div>
               )}
             </div>
           )}

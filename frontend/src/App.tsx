@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TravelForm from './components/TravelForm';
 import FrameworkSelector from './components/FrameworkSelector';
 import ItineraryDisplay from './components/ItineraryDisplay';
+import ItineraryModal from './components/ItineraryModal';
 import ChatBox from './components/ChatBox';
 import { ApiResponse, Framework, TravelRequest } from './types';
 import { planTripWithMastra } from './lib/mastraClient';
@@ -12,6 +13,7 @@ function App() {
   const [itinerary, setItinerary] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'form' | 'chat'>('form');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleFrameworkChange = (framework: Framework) => {
     setSelectedFramework(framework);
@@ -64,6 +66,29 @@ function App() {
       setLoading(false);
     }
   };
+  
+  // Add event listeners for itinerary updates from chat responses and modal control
+  useEffect(() => {
+    const handleItineraryUpdate = (event: CustomEvent) => {
+      if (event.detail && event.detail.destination) {
+        setItinerary(event.detail);
+      }
+    };
+    
+    const handleShowModal = (event: CustomEvent) => {
+      if (event.detail && event.detail.show) {
+        setIsModalOpen(true);
+      }
+    };
+    
+    window.addEventListener('itineraryUpdated', handleItineraryUpdate as EventListener);
+    window.addEventListener('showItineraryModal', handleShowModal as EventListener);
+    
+    return () => {
+      window.removeEventListener('itineraryUpdated', handleItineraryUpdate as EventListener);
+      window.removeEventListener('showItineraryModal', handleShowModal as EventListener);
+    };
+  }, []);
 
   return (
     <div className="app-container">
@@ -144,10 +169,18 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Add Itinerary Modal */}
+      <ItineraryModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        itinerary={itinerary} 
+        framework={selectedFramework} 
+      />
       
-      {/* Results Section - always below the split panels */}
-      {itinerary && (
-        <div className="container" style={{ marginTop: '2rem', paddingBottom: '2rem' }}>
+      {/* Results Section - only shown when not using modal */}
+      {false && itinerary && (
+        <div className="container" style={{ marginTop: '2rem', paddingBottom: '2rem' }} id="itinerary-display">
           <ItineraryDisplay itinerary={itinerary} framework={selectedFramework} />
         </div>
       )}

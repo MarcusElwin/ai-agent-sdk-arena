@@ -259,7 +259,7 @@ const searchAccommodations = async (
       propertyType;
     
     // Generate random amenity set
-    const propertyAmenities = [];
+    const propertyAmenities: string[] = [];
     const amenityCount = Math.floor(Math.random() * 7) + 3; // 3-9 amenities
     for (let j = 0; j < amenityCount; j++) {
       const amenity = possibleAmenities[Math.floor(Math.random() * possibleAmenities.length)];
