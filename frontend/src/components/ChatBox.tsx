@@ -3,6 +3,9 @@ import { Bot, Send, MapPin } from 'lucide-react';
 import { ApiResponse, Framework } from '../types';
 import { sendChatMessageWithMastra } from '../lib/mastraClient';
 import { extractJsonFromText } from '../lib/utils';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface ChatBoxProps {
   framework: Framework;
@@ -331,7 +334,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
     return num.toLocaleString(undefined, { maximumFractionDigits: 0 });
   }
   
-  // Function to show itinerary in modal and hide JSON in messages
+  // Function to show itinerary in modal without hiding JSON
   const showItineraryInModal = () => {
     // Show modal via custom event
     const showItineraryEvent = new CustomEvent('showItineraryModal', { 
@@ -339,43 +342,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
     });
     window.dispatchEvent(showItineraryEvent);
     
-    // Hide JSON blocks in messages
-    const jsonMessages = document.querySelectorAll('.message-bubble');
-    jsonMessages.forEach(msg => {
-      // Check for code blocks with JSON
-      if (msg.innerHTML?.includes('```json')) {
-        // Find all text nodes containing JSON content
-        const walker = document.createTreeWalker(
-          msg,
-          NodeFilter.SHOW_TEXT,
-          null
-        );
-        
-        let node;
-        let modified = false;
-        let hasNextNode = false;
-        
-        // Look through all text nodes
-        while ((hasNextNode = !!walker.nextNode()) && (node = walker.currentNode)) {
-          if (node.textContent?.includes('```json')) {
-            // Replace the JSON block with a simpler message
-            const text = node.textContent;
-            const newText = text.replace(/```json[\s\S]*?```/g, '*Itinerary details hidden - view in modal*');
-            node.textContent = newText;
-            modified = true;
-          }
-        }
-        
-        // If we didn't find and modify text nodes, try the direct HTML approach
-        if (!modified) {
-          const html = msg.innerHTML;
-          if (html.includes('```json')) {
-            const newHtml = html.replace(/<pre[\s\S]*?<\/pre>/g, '<em>*Itinerary details hidden - view in modal*</em>');
-            msg.innerHTML = newHtml;
-          }
-        }
-      }
-    });
+    // We're no longer hiding JSON blocks as they're now nicely formatted with syntax highlighting
   }
 
   return (
@@ -404,7 +371,35 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
                   : 'bot-bubble'
               }`}
             >
-              {message.content}
+              {typeof message.content === 'string' ? (
+                <div className="markdown-content">
+                  <ReactMarkdown
+                    components={{
+                      code({node, inline, className, children, ...props}) {
+                        const match = /language-(\w+)/.exec(className || '')
+                        return !inline && match ? (
+                          <SyntaxHighlighter
+                            style={vscDarkPlus}
+                            language={match[1]}
+                            PreTag="div"
+                            {...props}
+                          >
+                            {String(children).replace(/\n$/, '')}
+                          </SyntaxHighlighter>
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        )
+                      }
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                message.content
+              )}
             </div>
           </div>
         ))}
