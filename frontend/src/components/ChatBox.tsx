@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, Send, MapPin } from 'lucide-react';
+import { Bot, Send, MapPin, Trash2 } from 'lucide-react';
 import { ApiResponse, Framework } from '../types';
 import { sendChatMessageWithMastra } from '../lib/mastraClient';
 import { extractJsonFromText } from '../lib/utils';
@@ -129,6 +129,32 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
         setInput('');
       }
     }
+  };
+
+  const clearConversation = () => {
+    // Reset messages to initial welcome message
+    setMessages([{
+      id: Date.now().toString(),
+      type: 'system',
+      content: 'Welcome to AI Travel Planner! Fill out the form on the left to generate a travel plan or ask questions here.',
+      timestamp: new Date(),
+    }]);
+    
+    // Clear input field and history navigation
+    setInput('');
+    setHistoryIndex(-1);
+    
+    // Reset any additional state if needed
+    if (window.dispatchEvent && !itinerary) {
+      // Only clear itinerary if one was generated from chat
+      const event = new CustomEvent('itineraryUpdated', { detail: null });
+      window.dispatchEvent(event);
+    }
+    
+    // Focus the input field after clearing
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -462,6 +488,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
             className="form-input"
             disabled={loading}
           />
+          <button 
+            type="button" 
+            className="primary-button" 
+            style={{ width: 'auto', marginRight: '8px', background: 'var(--danger-color, #e53935)' }}
+            onClick={clearConversation}
+            title="Clear conversation"
+          >
+            <Trash2 size={16} />
+          </button>
           <button 
             type="submit" 
             className="primary-button" 
