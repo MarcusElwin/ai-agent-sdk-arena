@@ -345,6 +345,22 @@ body {
   color: var(--text-primary);
 }
 
+.framework-badge.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.coming-soon-badge {
+  font-size: 0.6rem;
+  background-color: var(--accent);
+  color: white;
+  padding: 0.1rem 0.3rem;
+  border-radius: 999px;
+  margin-top: 0.25rem;
+  display: inline-block;
+  line-height: 1;
+}
+
 .badge-pydantic.selected {
   background-color: rgba(34, 197, 94, 0.1);
   border-color: rgba(34, 197, 94, 0.5);

@@ -1,5 +1,6 @@
 import { MastraClient } from "@mastra/client-js";
 import { ApiResponse, TravelRequest } from "../types";
+import { extractJsonFromText } from "./utils";
 
 export const mastraClient = new MastraClient({
   baseUrl: "http://localhost:4111", // Default Mastra development server port
@@ -70,11 +71,30 @@ Please provide the response as valid JSON without any other text.`;
     // Based on the example, response has a text property
     if (response && response.text) {
       try {
-        // Try to parse as JSON first
+        // Try to use our improved JSON extractor
+        const extractedJson = extractJsonFromText(response.text);
+        if (extractedJson) {
+          console.log("Successfully extracted JSON from response");
+          return extractedJson;
+        }
+        
+        // Direct parse attempt if extraction fails
         return JSON.parse(response.text);
       } catch (e) {
         console.warn("Failed to parse Mastra response as JSON:", e);
         console.log("Raw response:", response.text);
+        
+        // Try one more time with a simpler regex approach
+        try {
+          const jsonMatch = response.text.match(/\{[\s\S]*\}/);
+          if (jsonMatch && jsonMatch[0]) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            console.log("Extracted JSON with simple regex");
+            return parsed;
+          }
+        } catch (regexError) {
+          console.warn("Simple regex extraction failed:", regexError);
+        }
         
         // If not valid JSON, create a structured response
         const fallbackResponse: ApiResponse = {

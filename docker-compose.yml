@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Frontend React service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: travel-planner-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - mastra-backend
+    restart: unless-stopped
+    networks:
+      - travel-planner-network
+
+  # Backend Mastra AI service
+  mastra-backend:
+    build:
+      context: ./backend/mastra-ai
+      dockerfile: Dockerfile
+    container_name: travel-planner-backend
+    environment:
+      - NODE_ENV=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - travel-planner-network
+    volumes:
+      - ./backend/mastra-ai/memory.db:/app/memory.db
+
+networks:
+  travel-planner-network:
+    driver: bridge

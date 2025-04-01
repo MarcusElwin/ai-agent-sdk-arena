@@ -21,7 +21,55 @@ The application consists of a React frontend and three separate backend implemen
 
 ## Setup Instructions
 
-### Frontend Setup
+### Running with Docker (Recommended)
+
+The easiest way to run the application is using Docker and Docker Compose.
+
+#### Prerequisites
+
+- Docker and Docker Compose installed
+- OpenAI API key
+
+#### Setup
+
+1. Create an `.env` file with your OpenAI API key:
+   ```bash
+   cp .env-example .env
+   # Edit the .env file to add your OpenAI API key
+   ```
+
+2. Build and start the containers using Make:
+   ```bash
+   make build
+   make up
+   ```
+
+   Or directly with Docker Compose:
+   ```bash
+   docker-compose build
+   docker-compose up -d
+   ```
+
+3. Access the application:
+   - Frontend: http://localhost:8080
+   - Backend API: http://localhost:3000
+
+#### Available Make Commands
+
+```bash
+make build     # Build all containers
+make up        # Start all containers in detached mode
+make up-logs   # Start containers with attached logs
+make down      # Stop and remove all containers
+make restart   # Restart all containers
+make logs      # View logs from all containers
+make ps        # List all running containers
+make clean     # Remove all containers, volumes, and images
+```
+
+### Running Without Docker
+
+#### Frontend Setup
 
 ```bash
 cd frontend
@@ -31,9 +79,9 @@ npm start
 
 The frontend will run on http://localhost:3000
 
-### Backend Setup
+#### Backend Setup
 
-#### Pydantic AI (Python)
+##### Pydantic AI (Python)
 
 ```bash
 cd backend/pydantic-ai
@@ -43,7 +91,7 @@ poetry run python server.py
 
 The Pydantic AI backend will run on http://localhost:8000
 
-#### OpenAI Agents SDK (Python)
+##### OpenAI Agents SDK (Python)
 
 ```bash
 cd backend/openai-agents-py
@@ -53,7 +101,7 @@ poetry run python server.py
 
 The OpenAI Agents SDK backend will run on http://localhost:8001
 
-#### Mastra AI (TypeScript)
+##### Mastra AI (TypeScript)
 
 ```bash
 cd backend/mastra-ai
@@ -61,7 +109,7 @@ npm install
 npm run dev
 ```
 
-The Mastra AI backend will run on http://localhost:8002
+The Mastra AI backend will run on http://localhost:3000
 
 ## Environment Variables
 
@@ -70,12 +118,17 @@ Create a `.env` file in each backend directory with the appropriate API keys:
 ```
 # For OpenAI-based backends
 OPENAI_API_KEY=your_openai_key_here
-
-# For Mastra AI
-MASTRA_API_KEY=your_mastra_key_here
 ```
 
-## System Architecture
+## Architecture Details
+
+For detailed architecture information about each implementation, see the respective READMEs:
+
+- [Mastra AI Architecture](backend/mastra-ai/README.md)
+- Pydantic AI Architecture (TODO)
+- OpenAI Agents Architecture (TODO)
+
+## System Overview
 
 The system consists of four main agents:
 
@@ -83,6 +136,18 @@ The system consists of four main agents:
 2. **Flight Research Agent** - Finds optimal flight options based on user constraints
 3. **Accommodation Agent** - Researches hotels, Airbnbs, and other lodging options
 4. **Activities Agent** - Discovers popular attractions, restaurants, and experiences
+
+## Agent Features
+
+The travel planning agents provide the following functionality:
+
+- Trip planning based on destination, dates, budget, and preferences
+- Flight suggestions and bookings
+- Accommodation recommendations
+- Activity and attraction suggestions
+- Weather-aware planning
+- Budget optimization
+- Interactive follow-up question answering
 
 ## Evaluation Criteria
 

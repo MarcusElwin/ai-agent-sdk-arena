@@ -16,9 +16,12 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleFrameworkChange = (framework: Framework) => {
-    setSelectedFramework(framework);
-    setItinerary(null);
-    setError(null);
+    // Only change if not disabled (currently only Mastra AI is enabled)
+    if (framework === 'mastra-ai') {
+      setSelectedFramework(framework);
+      setItinerary(null);
+      setError(null);
+    }
   };
 
   const handleFormSubmit = async (formData: TravelRequest) => {

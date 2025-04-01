@@ -18,6 +18,8 @@ const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         selected={selectedFramework === 'pydantic-ai'}
         onClick={() => onFrameworkChange('pydantic-ai')}
         className="badge-pydantic"
+        disabled={true}
+        comingSoon={true}
       />
       <FrameworkBadge
         framework="openai-agents"
@@ -25,6 +27,8 @@ const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         selected={selectedFramework === 'openai-agents'}
         onClick={() => onFrameworkChange('openai-agents')}
         className="badge-openai"
+        disabled={true}
+        comingSoon={true}
       />
       <FrameworkBadge
         framework="mastra-ai"
@@ -43,6 +47,8 @@ interface FrameworkBadgeProps {
   selected: boolean;
   onClick: () => void;
   className: string;
+  disabled?: boolean;
+  comingSoon?: boolean;
 }
 
 const FrameworkBadge: React.FC<FrameworkBadgeProps> = ({
@@ -50,14 +56,28 @@ const FrameworkBadge: React.FC<FrameworkBadgeProps> = ({
   label,
   selected,
   onClick,
-  className
+  className,
+  disabled = false,
+  comingSoon = false
 }) => {
   return (
     <button
-      className={`framework-badge ${className} ${selected ? 'selected' : ''}`}
-      onClick={onClick}
+      className={`framework-badge ${className} ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      title={comingSoon ? 'Coming soon' : undefined}
+      style={{
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.7 : 1,
+        padding: '0.4rem 0.6rem'
+      }}
     >
-      {label}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <span>{label}</span>
+        {comingSoon && (
+          <span className="coming-soon-badge">Coming Soon</span>
+        )}
+      </div>
     </button>
   );
 };
