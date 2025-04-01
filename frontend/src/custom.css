@@ -571,6 +571,105 @@ body {
   margin-top: 1rem;
 }
 
+/* Markdown Styling */
+.markdown-content {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.markdown-content p {
+  margin: 0.5em 0;
+}
+
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3, 
+.markdown-content h4 {
+  margin: 1em 0 0.5em;
+  font-weight: 600;
+}
+
+.markdown-content h1 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.125rem;
+}
+
+.markdown-content h3 {
+  font-size: 1rem;
+}
+
+.markdown-content ul, 
+.markdown-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-content li {
+  margin: 0.25em 0;
+}
+
+.markdown-content code {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  border: 1px solid var(--border-subtle);
+}
+
+.markdown-content pre {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  margin: 0.75em 0;
+  padding: 0; /* Removed padding as SyntaxHighlighter adds its own */
+}
+
+.markdown-content pre div {
+  border-radius: var(--radius-sm);
+  margin: 0 !important;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  font-size: 0.85em;
+  color: var(--text-bright);
+}
+
+/* Fix for SyntaxHighlighter */
+.markdown-content pre .linenumber {
+  min-width: 2.5em !important;
+  padding-right: 1em !important;
+  margin-right: 0.5em !important;
+  border-right: 1px solid var(--border-subtle) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  text-align: right !important;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+.markdown-content a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
 /* Layout visibility */
 @media (max-width: 767px) {
   .hidden-mobile {

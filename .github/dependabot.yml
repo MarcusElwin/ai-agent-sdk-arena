@@ -1,0 +1,32 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Poetry/Python dependencies (Pydantic AI backend)
+  - package-ecosystem: "pip"
+    directory: "/backend/pydantic-ai"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"
+
+  # Poetry/Python dependencies (OpenAI Agents backend)
+  - package-ecosystem: "pip"
+    directory: "/backend/openai-agents-py"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"
+
+  # Node.js dependencies (Frontend)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+
+  # Node.js dependencies (Mastra AI backend)
+  - package-ecosystem: "npm"
+    directory: "/backend/mastra-ai"
+    schedule:
+      interval: "weekly"
