@@ -399,32 +399,54 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
             >
               {typeof message.content === 'string' ? (
                 <div className="markdown-content">
-                  <ReactMarkdown
-                    components={{
-                      code({node, inline, className, children, ...props}) {
-                        const match = /language-(\w+)/.exec(className || '')
-                        return !inline && match ? (
-                          <SyntaxHighlighter
-                            style={vscDarkPlus}
-                            language={match[1]}
-                            PreTag="div"
-                            {...props}
-                          >
-                            {String(children).replace(/\n$/, '')}
-                          </SyntaxHighlighter>
-                        ) : (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        )
-                      }
-                    }}
-                  >
-                    {message.content}
-                  </ReactMarkdown>
+                  {message.content.trim() === '' ? (
+                    // Show loading indicator for empty messages (streaming state)
+                    <div className="ai-thinking">
+                      <div className="thinking-container">
+                        <Bot size={18} className="thinking-icon" />
+                        <div className="thinking-animation">
+                          <span className="thinking-text">Thinking</span>
+                          <span className="thinking-dots">
+                            <span className="dot"></span>
+                            <span className="dot"></span>
+                            <span className="dot"></span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    // Render markdown for non-empty messages
+                    <ReactMarkdown
+                      components={{
+                        code({node, inline, className, children, ...props}) {
+                          const match = /language-(\w+)/.exec(className || '')
+                          return !inline && match ? (
+                            <SyntaxHighlighter
+                              style={vscDarkPlus}
+                              language={match[1]}
+                              PreTag="div"
+                              {...props}
+                            >
+                              {String(children).replace(/\n$/, '')}
+                            </SyntaxHighlighter>
+                          ) : (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          )
+                        }
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
+                  )}
                 </div>
-              ) : (
+              ) : React.isValidElement(message.content) ? (
+                // Pass through React elements like buttons directly
                 message.content
+              ) : (
+                // Fallback for any other content
+                String(message.content)
               )}
             </div>
           </div>
