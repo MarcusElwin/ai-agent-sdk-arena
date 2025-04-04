@@ -21,5 +21,6 @@ export const mastra = new Mastra({
   logger: createLogger({
     name: 'Mastra',
     level: 'info',
-  }),
+  })
+  // Memory configuration removed due to compatibility issue
 });

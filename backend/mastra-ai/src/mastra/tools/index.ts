@@ -1,5 +1,6 @@
 import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
+import { Memory } from '@mastra/memory';
 
 interface GeocodingResponse {
   results: {
@@ -483,3 +484,5 @@ function getWeatherCondition(code: number): string {
   };
   return conditions[code] || 'Unknown';
 }
+
+// Memory Tool removed to simplify integration

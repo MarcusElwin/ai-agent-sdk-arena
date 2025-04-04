@@ -2,6 +2,7 @@ import { MastraClient } from "@mastra/client-js";
 import { ApiResponse, TravelRequest } from "../types";
 import { extractJsonFromText } from "./utils";
 
+// Initialize Mastra client with memory support
 export const mastraClient = new MastraClient({
   baseUrl: "http://localhost:4111", // Default Mastra development server port
 });
@@ -13,6 +14,9 @@ export const planTripWithMastra = async (travelRequest: TravelRequest): Promise<
     
     // Create a prompt with instructions about the expected output format
     const prompt = `You are a travel planning assistant. Create a complete travel itinerary in JSON format.
+
+You have access to conversation memory that contains previous interactions and any travel plans already created.
+If asked to modify a previous plan, refer to the conversation history.
 
 TRAVEL REQUEST:
 Destination: ${travelRequest.destination}
@@ -58,14 +62,27 @@ RESPONSE FORMAT:
 
 Please provide the response as valid JSON without any other text.`;
     
-    // Generate a response with the travel request
+    // Use a stable threadId for consistent memory across interactions (GitHub example pattern)
+    // Get existing threadId or create new one
+    const threadId = localStorage.getItem('mastra-trip-thread-id') || `trip-thread-${Date.now()}`;
+    localStorage.setItem('mastra-trip-thread-id', threadId);
+    
+    // User identifier - stays consistent for the user
+    const resourceId = localStorage.getItem('mastra-user-id') || `user-${Date.now()}`;
+    localStorage.setItem('mastra-user-id', resourceId);
+    
+    console.log(`Using trip thread ID: ${threadId} and resource ID: ${resourceId} for memory persistence.`);
+    
+    // Use GitHub example pattern with threadId and resourceId
     const response = await agent.generate({
       messages: [
         {
           role: "user",
           content: prompt
         }
-      ]
+      ],
+      threadId: threadId,
+      resourceId: resourceId
     });
     
     // Based on the example, response has a text property
@@ -152,6 +169,31 @@ Please provide the response as valid JSON without any other text.`;
 };
 
 
+// Expose session reset function to window for ChatBox to use
+if (typeof window !== 'undefined') {
+  window._resetMastraSession = () => {
+    console.log('Resetting Mastra conversation threads');
+    
+    // Get current thread ID before removing it
+    const threadId = localStorage.getItem('mastra-thread-id');
+    
+    // Clear thread and messages
+    localStorage.removeItem('mastra-thread-id');
+    localStorage.removeItem('mastra-user-id');
+    
+    if (threadId) {
+      localStorage.removeItem(`messages-${threadId}`);
+    }
+    
+    // Also clear trip thread if it exists
+    const tripThreadId = localStorage.getItem('mastra-trip-thread-id');
+    if (tripThreadId) {
+      localStorage.removeItem('mastra-trip-thread-id');
+      localStorage.removeItem(`messages-${tripThreadId}`);
+    }
+  };
+}
+
 // Function for sending chat messages with streaming
 export const sendChatMessageWithMastra = async (
   message: string, 
@@ -165,13 +207,51 @@ export const sendChatMessageWithMastra = async (
     // Add context about the itinerary if available
     let prompt = message;
     if (itinerary) {
-      prompt = `${message}\n\nContext: I'm planning a trip to ${itinerary.destination} from ${itinerary.dates.start} to ${itinerary.dates.end} with a budget of $${itinerary.budget.total}.`;
+      prompt = `${message}\n\nContext: I'm planning a trip to ${itinerary.destination} from ${itinerary.dates.start} to ${itinerary.dates.end} with a budget of $${itinerary.budget.total}.
+
+IMPORTANT: Before answering, look back at our conversation history in memory. You must reference specific details we've previously discussed.
+If I've mentioned preferences, dates, or asked questions before, acknowledge them explicitly in your response.
+
+Always begin your response with a brief summary of what you already know about my travel plans if we've discussed them previously. Be very specific about dates, destinations, and preferences that I have shared before.`;
+    } else {
+      prompt = `${message}\n\nIMPORTANT: Before answering, look back at our conversation history in memory. You must reference specific details we've previously discussed.
+If I've mentioned preferences, dates, or asked questions before, acknowledge them explicitly in your response.
+
+Always begin your response with a brief summary of what you already know about my travel plans if we've discussed them previously. Be very specific about dates, destinations, and preferences that I have shared before.`;
     }
+    
+    // Use a stable threadId for consistent memory across interactions (GitHub example pattern)
+    // Get existing threadId or create new one
+    const threadId = localStorage.getItem('mastra-thread-id') || `thread-${Date.now()}`;
+    localStorage.setItem('mastra-thread-id', threadId);
+    
+    // User identifier - stays consistent for the user
+    const resourceId = localStorage.getItem('mastra-user-id') || `user-${Date.now()}`;
+    localStorage.setItem('mastra-user-id', resourceId);
+    
+    console.log(`Using thread ID: ${threadId} and resource ID: ${resourceId} for memory persistence.`);
+    
+    // If this is a new message in the conversation, add to localStorage history
+    const messagesKey = `messages-${threadId}`;
+    const existingMessages = JSON.parse(localStorage.getItem(messagesKey) || '[]');
+    if (message && message.trim()) {
+      existingMessages.push({
+        role: 'user',
+        content: message,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem(messagesKey, JSON.stringify(existingMessages));
+    }
+    
+    // Context removed to match GitHub example
     
     // If no streaming callback is provided, use the regular generate method
     if (!onChunk) {
+      // Include resourceId and threadId for memory as specified in docs
       const response = await agent.generate({
-        messages: [{ role: "user", content: prompt }]
+        messages: [{ role: "user", content: prompt }],
+        threadId: threadId,
+        resourceId: resourceId
       });
       return response.text || "I'm sorry, I couldn't process your request.";
     }
@@ -182,7 +262,11 @@ export const sendChatMessageWithMastra = async (
     try {
       // Use the stream method with proper message format and tracking options
       const stream = await agent.stream(
-        { messages: [{ role: "user", content: prompt }] },
+        { 
+          messages: [{ role: "user", content: prompt }],
+          threadId: threadId,
+          resourceId: resourceId
+        }
       );
       
       // Use textStream as shown in the docs
@@ -196,8 +280,11 @@ export const sendChatMessageWithMastra = async (
       console.warn("stream method failed, falling back to regular generate:", streamError);
       
       // Fall back to non-streaming generate if streaming fails
+      // Ensure message format is correct for Vercel AI SDK
       const response = await agent.generate({
-        messages: [{ role: "user", content: prompt }]
+        messages: [{ role: "user", content: prompt }],
+        sessionId: sessionId
+        // Context removed to fix prompt error
       });
       
       const finalResponse = response.text || "I'm sorry, I couldn't process your request.";

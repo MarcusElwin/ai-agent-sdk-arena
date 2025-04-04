@@ -1,5 +1,12 @@
 export type Framework = 'pydantic-ai' | 'openai-agents' | 'mastra-ai';
 
+// Add Window interface augmentation for the _resetMastraSession function
+declare global {
+  interface Window {
+    _resetMastraSession?: () => void;
+  }
+}
+
 export interface TravelRequest {
   destination: string;
   startDate: string;

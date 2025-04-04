@@ -151,6 +151,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({ framework, loading, itinerary, error 
       window.dispatchEvent(event);
     }
     
+    // Create a new session ID for future conversations
+    // This API is implementation detail and needs to match mastraClient.ts
+    if (window._resetMastraSession) {
+      window._resetMastraSession();
+    }
+    
     // Focus the input field after clearing
     setTimeout(() => {
       inputRef.current?.focus();
