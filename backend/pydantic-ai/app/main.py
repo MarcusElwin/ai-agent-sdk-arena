@@ -4,8 +4,6 @@ from typing import Any, Dict, List
 import dotenv
 from app.agents.accommodation import AccommodationAgent
 from app.agents.activities import ActivitiesAgent
-
-# Import agent modules
 from app.agents.coordinator import CoordinatorAgent
 from app.agents.flight import FlightResearchAgent
 from fastapi import FastAPI, HTTPException

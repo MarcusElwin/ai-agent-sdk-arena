@@ -2,8 +2,6 @@ import os
 from typing import Any, Dict, List
 
 import dotenv
-
-# Import agent modules
 from app.agents.coordinator import CoordinatorAgent
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
