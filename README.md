@@ -77,6 +77,23 @@ make clean     # Remove all containers, volumes, and images
 
 ### Running Without Docker
 
+#### Prerequisites
+
+- Node.js 20 or higher (recommended to use NVM)
+- Python 3.9 or higher
+- Poetry (for Python dependency management)
+
+#### Node.js Setup (using NVM)
+
+If you have NVM installed, you can simply run:
+
+```bash
+# Use the correct Node.js version
+nvm use
+```
+
+If you don't have NVM installed, follow the [NVM installation instructions](https://github.com/nvm-sh/nvm#installing-and-updating).
+
 #### Frontend Setup
 
 ```bash
@@ -179,9 +196,17 @@ The travel planning agents provide the following functionality:
 
 ## Development
 
+### Requirements
+
+- Node.js 20 or higher (for JavaScript/TypeScript code)
+- Python 3.9 or higher (for Python code)
+- Poetry (Python dependency management)
+
+This project uses an `.nvmrc` file to specify the Node.js version. If you use NVM, simply run `nvm use` in the project root.
+
 ### Code Quality
 
-This project uses ESLint and Prettier for code quality and formatting consistency. See [LINTING.md](LINTING.md) for details.
+This project uses ESLint and Prettier for JavaScript/TypeScript code quality, and Black, isort, and flake8 for Python code quality. See [LINTING.md](LINTING.md) for details.
 
 - Run `npm run lint` to check for linting issues
 - Run `npm run format` to format all files
