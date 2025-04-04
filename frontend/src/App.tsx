@@ -21,6 +21,9 @@ function App() {
       setSelectedFramework(framework);
       setItinerary(null);
       setError(null);
+    } else {
+      // For non-implemented frameworks, show error
+      setError(`The ${framework} framework is not implemented yet. Please use Mastra AI.`);
     }
   };
 
@@ -35,25 +38,8 @@ function App() {
         // Use Mastra client directly
         data = await planTripWithMastra(formData);
       } else {
-        // API endpoints for other frameworks
-        const endpoints = {
-          'pydantic-ai': 'http://localhost:8000/plan',
-          'openai-agents': 'http://localhost:8001/plan'
-        };
-        
-        const response = await fetch(endpoints[selectedFramework], {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-        
-        data = await response.json();
+        // For non-implemented frameworks, throw a descriptive error
+        throw new Error(`The ${selectedFramework} framework is not implemented yet. Please use Mastra AI.`);
       }
       
       setItinerary(data);
