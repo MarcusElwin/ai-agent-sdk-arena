@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
 import ItineraryDisplay from './ItineraryDisplay';
 import { ApiResponse, Framework } from '../types';

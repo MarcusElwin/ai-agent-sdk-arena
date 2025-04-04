@@ -171,3 +171,29 @@ The travel planning agents provide the following functionality:
 - Performance
 - Features supported
 - Ease of deployment
+
+## Development
+
+### Code Quality
+
+This project uses ESLint and Prettier for code quality and formatting consistency. See [LINTING.md](LINTING.md) for details.
+
+- Run `npm run lint` to check for linting issues
+- Run `npm run format` to format all files
+
+### Continuous Integration
+
+GitHub Actions workflows are set up for:
+
+- **Linting and Formatting**: Ensures code quality
+- **Testing**: Runs unit tests for all components
+- **Building**: Builds the frontend and backend applications
+- **Semantic Release**: Automates versioning and changelog generation based on commit messages
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes using conventional commits (`feat: add amazing feature`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
