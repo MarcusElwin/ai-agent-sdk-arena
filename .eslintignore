@@ -1,6 +1,17 @@
-# Ignore build directory
-build/
-dist/
-node_modules/
-.mastra/
-coverage/
+# Common directories to ignore
+**/node_modules/
+**/dist/
+**/build/
+**/.mastra/
+**/coverage/
+
+# Python files (ESLint is for JavaScript/TypeScript)
+**/*.py
+**/*.pyc
+**/__pycache__/
+**/.venv/
+**/.pytest_cache/
+
+# Ignore minified files
+**/*.min.js
+**/*.min.css

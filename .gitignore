@@ -38,6 +38,11 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
+# Build directories
+**/build/
+**/dist/
+frontend/build/
+
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -134,3 +139,25 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# SQLite database files
+*.sqlite
+*.sqlite3
+*.db

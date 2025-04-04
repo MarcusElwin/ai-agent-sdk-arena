@@ -33,18 +33,21 @@ The easiest way to run the application is using Docker and Docker Compose.
 #### Setup
 
 1. Create an `.env` file with your OpenAI API key:
+
    ```bash
    cp .env-example .env
    # Edit the .env file to add your OpenAI API key
    ```
 
 2. Build and start the containers using Make:
+
    ```bash
    make build
    make up
    ```
 
    Or directly with Docker Compose:
+
    ```bash
    docker-compose build
    docker-compose up -d
@@ -127,6 +130,18 @@ For detailed architecture information about each implementation, see the respect
 - [Mastra AI Architecture](backend/mastra-ai/README.md)
 - Pydantic AI Architecture (TODO)
 - OpenAI Agents Architecture (TODO)
+
+## User Interface
+
+![AI Travel Planner UI](docs/images/ui-screenshot.png)
+
+The frontend provides an intuitive interface for planning travel with AI:
+
+- **Framework Selection**: Choose between different AI agent frameworks (currently using Mastra AI)
+- **Travel Form**: Input destination, dates, budget, and preferences
+- **AI Chat Interface**: Interact with the AI to refine your travel plans
+- **Interactive Itinerary Display**: View and modify generated travel plans
+- **Responsive Design**: Works on desktop and mobile devices
 
 ## System Overview
 

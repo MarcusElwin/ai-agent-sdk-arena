@@ -1,19 +1,19 @@
 import { openai } from '@ai-sdk/openai';
 import { Agent } from '@mastra/core/agent';
-import { 
-  weatherTool, 
-  flightSearchTool, 
-  accommodationSearchTool, 
-  activitiesSearchTool
+import {
+  weatherTool,
+  flightSearchTool,
+  accommodationSearchTool,
+  activitiesSearchTool,
 } from '../tools';
 
 // Coordinator Agent - Analyzes user requirements, delegates tasks, and synthesizes final itinerary
 // Create shared memory instance following GitHub example
-import { Memory } from "@mastra/memory";
+import { Memory } from '@mastra/memory';
 const memory = new Memory({
   options: {
-    lastMessages: 10
-  }
+    lastMessages: 10,
+  },
 });
 
 export const coordinatorAgent = new Agent({
@@ -68,7 +68,7 @@ export const coordinatorAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool },
-  memory
+  memory,
 });
 
 // Flight Research Agent - Finds optimal flight options based on user constraints
@@ -196,5 +196,5 @@ export const weatherAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool, flightSearchTool, accommodationSearchTool, activitiesSearchTool },
-  memory
+  memory,
 });

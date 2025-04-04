@@ -1,6 +1,18 @@
-# Ignore artifacts:
-build
-coverage
-node_modules
-*.lock
-.mastra
+# Common directories to ignore
+**/node_modules/
+**/dist/
+**/build/
+**/.mastra/
+**/coverage/
+
+# Python files (Prettier is for JavaScript/TypeScript/CSS/MD)
+**/*.py
+**/*.pyc
+**/__pycache__/
+**/.venv/
+**/.pytest_cache/
+
+# Lock files and generated files
+**/*.lock
+**/*.min.js
+**/*.min.css
