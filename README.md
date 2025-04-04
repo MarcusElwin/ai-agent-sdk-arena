@@ -1,5 +1,10 @@
 # AI Agent Framework Comparison - Travel Planner
 
+![Lint and Format](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/lint-format.yml/badge.svg)
+![Tests](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/test.yml/badge.svg)
+![Build](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/build.yml/badge.svg)
+![Release](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/release.yml/badge.svg)
+
 This project aims to evaluate three AI agent frameworks for a travel planning system:
 
 1. **Pydantic AI** (Python)
@@ -186,13 +191,9 @@ This project uses ESLint and Prettier for code quality and formatting consistenc
 GitHub Actions workflows are set up for:
 
 - **Linting and Formatting**: Ensures code quality
-  ![Lint and Format](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/lint-format.yml/badge.svg)
 - **Testing**: Runs unit tests for all components
-  ![Tests](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/test.yml/badge.svg)
 - **Building**: Builds the frontend and backend applications
-  ![Build](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/build.yml/badge.svg)
 - **Semantic Release**: Automates versioning and changelog generation based on commit messages
-  ![Release](https://github.com/MarcusElwin/ai-agent-arena/actions/workflows/release.yml/badge.svg)
 
 ### Contributing
 
