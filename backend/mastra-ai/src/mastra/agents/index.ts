@@ -68,7 +68,7 @@ export const coordinatorAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool },
-  memory,
+  memory: memory as any,
 });
 
 // Flight Research Agent - Finds optimal flight options based on user constraints
@@ -196,5 +196,5 @@ export const weatherAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool, flightSearchTool, accommodationSearchTool, activitiesSearchTool },
-  memory,
+  memory: memory as any,
 });

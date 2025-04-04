@@ -4,13 +4,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
   // JavaScript/TypeScript settings
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -33,7 +28,7 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  
+
   // Python settings
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",

@@ -62,17 +62,20 @@ We use Husky and lint-staged to automatically format and lint code during commit
 For the best development experience, install the following VS Code extensions:
 
 For JavaScript/TypeScript:
+
 - ESLint (`dbaeumer.vscode-eslint`)
 - Prettier (`esbenp.prettier-vscode`)
 - Tailwind CSS IntelliSense (`bradlc.vscode-tailwindcss`)
 
 For Python:
+
 - Python (`ms-python.python`)
 - Black Formatter (`ms-python.black-formatter`)
 - isort (`ms-python.isort`)
 - Flake8 (`ms-python.flake8`)
 
 The project's VS Code settings are configured to:
+
 - Format on save
 - Fix lint issues on save
 - Use Prettier as the default formatter for JS/TS files

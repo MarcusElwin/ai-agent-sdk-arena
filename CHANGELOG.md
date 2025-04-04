@@ -6,9 +6,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* Initial release
-* Implemented Mastra AI agent framework
-* Built React frontend with travel planning form and chat interface
-* Added linting and formatting with ESLint and Prettier
-* Set up CI/CD with GitHub Actions
-* Added semantic release for versioning
+- Initial release
+- Implemented Mastra AI agent framework
+- Built React frontend with travel planning form and chat interface
+- Added linting and formatting with ESLint and Prettier
+- Set up CI/CD with GitHub Actions
+- Added semantic release for versioning

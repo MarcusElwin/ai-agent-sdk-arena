@@ -5,28 +5,30 @@ This project demonstrates a multi-agent travel planning system built with Mastra
 ## Architecture
 
 ### Component Flow
+
 ```mermaid
 flowchart TD
     User[User] --> |Travel Request| Coordinator[Coordinator Agent]
-    
+
     Coordinator --> |Flight Search Tasks| FlightAgent[Flight Agent]
     Coordinator --> |Accommodation Tasks| AccommodationAgent[Accommodation Agent]
     Coordinator --> |Activities Tasks| ActivitiesAgent[Activities Agent]
     Coordinator --> |Weather Data| WeatherTool[Weather Tool]
-    
+
     FlightAgent --> |Uses| FlightTool[Flight Search Tool]
     AccommodationAgent --> |Uses| AccommodationTool[Accommodation Search Tool]
     ActivitiesAgent --> |Uses| ActivitiesTool[Activities Search Tool]
     ActivitiesAgent --> |Uses| WeatherTool
-    
+
     FlightAgent --> |Flight Results| Coordinator
     AccommodationAgent --> |Accommodation Results| Coordinator
     ActivitiesAgent --> |Activities Results| Coordinator
-    
+
     Coordinator --> |Complete Itinerary| User
 ```
 
 ### Sequence Diagram
+
 ```mermaid
 sequenceDiagram
     actor User
@@ -38,12 +40,12 @@ sequenceDiagram
     participant AccommodationTool as Accommodation Search Tool
     participant ActivitiesTool as Activities Search Tool
     participant WeatherTool as Weather Tool
-    
+
     User->>Coordinator: Send travel request (destination, dates, budget)
-    
+
     Coordinator->>WeatherTool: Check destination weather
     WeatherTool-->>Coordinator: Return weather data
-    
+
     par Flight Search
         Coordinator->>FlightAgent: Request flight options
         FlightAgent->>FlightTool: Search flights (origin, destination, dates)
@@ -62,10 +64,10 @@ sequenceDiagram
         ActivitiesTool-->>ActivitiesAgent: Return activities options
         ActivitiesAgent-->>Coordinator: Return curated activities itinerary
     end
-    
+
     Coordinator->>Coordinator: Integrate all components & validate budget
     Coordinator->>User: Return complete travel itinerary
-    
+
     User->>Coordinator: Ask follow-up question
     Coordinator->>Coordinator: Process question using existing data
     Coordinator->>User: Respond with specific information
@@ -74,6 +76,7 @@ sequenceDiagram
 ## Agent Roles
 
 ### Coordinator Agent
+
 - Main orchestration agent
 - Delegates tasks to specialized agents
 - Synthesizes final travel itinerary
@@ -81,16 +84,19 @@ sequenceDiagram
 - Answers user follow-up questions
 
 ### Flight Agent
+
 - Specialized in finding optimal flights
 - Considers price, layovers, flight duration, airline quality
 - Makes recommendations based on user preferences
 
 ### Accommodation Agent
+
 - Finds ideal lodging options
 - Considers location, amenities, ratings, value for money
 - Specializes in hotel and accommodation recommendations
 
 ### Activities Agent
+
 - Discovers popular attractions and experiences
 - Creates daily itineraries with logical organization
 - Balances must-see attractions with unique experiences
@@ -99,18 +105,22 @@ sequenceDiagram
 ## Tools
 
 ### Flight Search Tool
+
 - Finds flight options based on origin, destination, and dates
 - Returns flight details including prices, times, and airline information
 
 ### Accommodation Search Tool
+
 - Searches for accommodation options based on location and requirements
 - Returns details about hotels, apartments, and other lodging options
 
 ### Activities Search Tool
+
 - Finds activities, attractions, and experiences at a destination
 - Creates recommended daily itineraries
 
 ### Weather Tool
+
 - Gets current weather for a location
 - Helps plan weather-appropriate activities
 
