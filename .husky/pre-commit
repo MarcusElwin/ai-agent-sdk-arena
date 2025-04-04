@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Format and lint JavaScript/TypeScript files
+cd frontend && npm run format-staged
+
+# Format Python files if tools are available
+if command -v black >/dev/null 2>&1; then
+  echo "Formatting Python files with black..."
+  black --quiet backend/
+fi
+
+if command -v isort >/dev/null 2>&1; then
+  echo "Sorting Python imports with isort..."
+  isort --quiet backend/
+fi
+
+if command -v flake8 >/dev/null 2>&1; then
+  echo "Linting Python files with flake8..."
+  # Set to exit with success (warnings only)
+  flake8 backend/ || true
+fi

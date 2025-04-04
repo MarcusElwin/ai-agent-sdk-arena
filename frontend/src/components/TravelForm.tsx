@@ -15,13 +15,13 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
     preferences: {
       origin: 'New York',
       accommodationType: 'hotel',
-      activities: ['sightseeing', 'dining']
-    }
+      activities: ['sightseeing', 'dining'],
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     if (name.includes('.')) {
       // Handle nested preferences
       const [parent, child] = name.split('.');
@@ -30,40 +30,40 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
           ...prev,
           preferences: {
             ...prev.preferences,
-            [child]: value
-          }
+            [child]: value,
+          },
         }));
       }
     } else {
       // Handle top-level fields
       setFormData(prev => ({
         ...prev,
-        [name]: name === 'budget' ? Number(value) : value
+        [name]: name === 'budget' ? Number(value) : value,
       }));
     }
   };
 
   const handleActivitiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
-    
+
     setFormData(prev => {
       const currentActivities = prev.preferences.activities || [];
-      
+
       if (checked) {
         return {
           ...prev,
           preferences: {
             ...prev.preferences,
-            activities: [...currentActivities, value]
-          }
+            activities: [...currentActivities, value],
+          },
         };
       } else {
         return {
           ...prev,
           preferences: {
             ...prev.preferences,
-            activities: currentActivities.filter(activity => activity !== value)
-          }
+            activities: currentActivities.filter(activity => activity !== value),
+          },
         };
       }
     });
@@ -82,14 +82,23 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
           Plan Your Trip
         </span>
       </div>
-      <div className="sleek-card-content" style={{ 
-        overflow: 'auto', 
-        height: 'calc(100% - 114px)', /* Adjusted to account for footer height */
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <div className="form-content" style={{ flex: '1 1 auto', overflow: 'auto', paddingBottom: '16px' }}>
+      <div
+        className="sleek-card-content"
+        style={{
+          overflow: 'auto',
+          height: 'calc(100% - 114px)' /* Adjusted to account for footer height */,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          <div
+            className="form-content"
+            style={{ flex: '1 1 auto', overflow: 'auto', paddingBottom: '16px' }}
+          >
             <div className="form-field">
               <label htmlFor="destination" className="form-label">
                 <div className="input-label-with-icon">
@@ -212,34 +221,42 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit }) => {
                 </div>
               </span>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                {['sightseeing', 'dining', 'adventure', 'relaxation', 'culture', 'shopping'].map(activity => (
-                  <div key={activity} style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                      type="checkbox"
-                      id={`activity-${activity}`}
-                      name="activities"
-                      value={activity}
-                      checked={formData.preferences.activities?.includes(activity) || false}
-                      onChange={handleActivitiesChange}
-                      style={{ marginRight: '0.5rem' }}
-                    />
-                    <label htmlFor={`activity-${activity}`} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                      {activity.charAt(0).toUpperCase() + activity.slice(1)}
-                    </label>
-                  </div>
-                ))}
+                {['sightseeing', 'dining', 'adventure', 'relaxation', 'culture', 'shopping'].map(
+                  activity => (
+                    <div key={activity} style={{ display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type="checkbox"
+                        id={`activity-${activity}`}
+                        name="activities"
+                        value={activity}
+                        checked={formData.preferences.activities?.includes(activity) || false}
+                        onChange={handleActivitiesChange}
+                        style={{ marginRight: '0.5rem' }}
+                      />
+                      <label
+                        htmlFor={`activity-${activity}`}
+                        style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}
+                      >
+                        {activity.charAt(0).toUpperCase() + activity.slice(1)}
+                      </label>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </div>
 
-          <div className="form-footer" style={{ 
-            flex: '0 0 auto',
-            padding: '1.25rem', 
-            borderTop: '1px solid var(--border-subtle)', 
-            background: 'var(--bg-card)',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
+          <div
+            className="form-footer"
+            style={{
+              flex: '0 0 auto',
+              padding: '1.25rem',
+              borderTop: '1px solid var(--border-subtle)',
+              background: 'var(--bg-card)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <button type="submit" className="primary-button">
               Generate Travel Plan
             </button>

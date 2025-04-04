@@ -1,36 +1,42 @@
 /* Geist-inspired design system (Vercel) */
 :root {
   /* Colors - Dark Mode */
-  --bg-dark: #000000;  /* Pure black background like Vercel */
-  --bg-card: #111111;  /* Slightly lighter card background */
-  --bg-subtle: #1a1a1a;  /* Subtle background for inputs */
-  --text-primary: #ffffff;  /* White text */
-  --text-secondary: #888888;  /* Light gray text */
-  --text-bright: #f5f5f5;  /* Brighter text for emphasis */
-  --border-subtle: rgba(255, 255, 255, 0.1);  /* Subtle border */
-  
+  --bg-dark: #000000; /* Pure black background like Vercel */
+  --bg-card: #111111; /* Slightly lighter card background */
+  --bg-subtle: #1a1a1a; /* Subtle background for inputs */
+  --text-primary: #ffffff; /* White text */
+  --text-secondary: #888888; /* Light gray text */
+  --text-bright: #f5f5f5; /* Brighter text for emphasis */
+  --border-subtle: rgba(255, 255, 255, 0.1); /* Subtle border */
+
   /* Accents */
-  --accent: #0070f3;  /* Vercel blue */
-  --accent-hover: #0B7BFE;  /* Hover blue */
-  --accent-light: rgba(0, 112, 243, 0.1);  /* Light blue for backgrounds */
-  --focus-ring: rgba(0, 112, 243, 0.5);  /* Focus ring color */
-  --amber: #f5a623;  /* Amber accent */
-  --amber-dark: #e09612;  /* Darker amber */
-  --purple: #8e44ef;  /* Purple accent */
-  
+  --accent: #0070f3; /* Vercel blue */
+  --accent-hover: #0b7bfe; /* Hover blue */
+  --accent-light: rgba(0, 112, 243, 0.1); /* Light blue for backgrounds */
+  --focus-ring: rgba(0, 112, 243, 0.5); /* Focus ring color */
+  --amber: #f5a623; /* Amber accent */
+  --amber-dark: #e09612; /* Darker amber */
+  --purple: #8e44ef; /* Purple accent */
+
   /* Gradients - Using a single consistent gradient variable */
-  --gradient-primary: linear-gradient(to right, #0070f3, #8e44ef);  /* Standard direction for all text */
-  
+  --gradient-primary: linear-gradient(
+    to right,
+    #0070f3,
+    #8e44ef
+  ); /* Standard direction for all text */
+
   /* Typography */
-  --font-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  --font-mono: 'Geist Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
-  
+  --font-sans:
+    'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:
+    'Geist Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+
   /* Spacing & Sizing */
-  --radius-sm: 5px;  /* Small border radius */
-  --radius-md: 8px;  /* Medium border radius */
+  --radius-sm: 5px; /* Small border radius */
+  --radius-md: 8px; /* Medium border radius */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  
+
   /* Transitions */
   --transition-default: all 0.2s ease;
 }
@@ -155,8 +161,13 @@ body {
 }
 
 @keyframes blink {
-  from, to { opacity: 1; }
-  50% { opacity: 0; }
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* Cards */
@@ -352,13 +363,16 @@ body {
 
 .coming-soon-badge {
   font-size: 0.6rem;
-  background-color: var(--accent);
-  color: white;
-  padding: 0.1rem 0.3rem;
+  background-color: var(--amber);
+  color: black;
+  padding: 0.1rem 0.35rem;
   border-radius: 999px;
   margin-top: 0.25rem;
   display: inline-block;
   line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .badge-pydantic.selected {
@@ -498,7 +512,8 @@ body {
 }
 
 @keyframes pulse-subtle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.7;
   }
   50% {
@@ -507,7 +522,9 @@ body {
 }
 
 @keyframes dot-pulse {
-  0%, 50%, 100% {
+  0%,
+  50%,
+  100% {
     transform: scale(1);
     opacity: 0.6;
   }
@@ -523,7 +540,7 @@ body {
     flex-direction: column;
     height: auto;
   }
-  
+
   .split-layout > div {
     flex: 1 1 auto;
     width: 100%;
@@ -532,12 +549,12 @@ body {
     height: auto;
     min-height: 500px;
   }
-  
+
   .mobile-tabs {
     display: flex;
     margin-bottom: 1rem;
   }
-  
+
   .mobile-tab {
     flex: 1;
     text-align: center;
@@ -550,7 +567,7 @@ body {
     font-size: 0.875rem;
     letter-spacing: -0.01em;
   }
-  
+
   .mobile-tab.active {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -597,9 +614,9 @@ body {
   margin: 0.5em 0;
 }
 
-.markdown-content h1, 
-.markdown-content h2, 
-.markdown-content h3, 
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
 .markdown-content h4 {
   margin: 1em 0 0.5em;
   font-weight: 600;
@@ -617,7 +634,7 @@ body {
   font-size: 1rem;
 }
 
-.markdown-content ul, 
+.markdown-content ul,
 .markdown-content ol {
   margin: 0.5em 0;
   padding-left: 1.5em;

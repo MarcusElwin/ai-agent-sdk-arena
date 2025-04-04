@@ -1,13 +1,21 @@
 import { openai } from '@ai-sdk/openai';
 import { Agent } from '@mastra/core/agent';
-import { 
-  weatherTool, 
-  flightSearchTool, 
-  accommodationSearchTool, 
-  activitiesSearchTool 
+import {
+  weatherTool,
+  flightSearchTool,
+  accommodationSearchTool,
+  activitiesSearchTool,
 } from '../tools';
 
 // Coordinator Agent - Analyzes user requirements, delegates tasks, and synthesizes final itinerary
+// Create shared memory instance following GitHub example
+import { Memory } from '@mastra/memory';
+const memory = new Memory({
+  options: {
+    lastMessages: 10,
+  },
+});
+
 export const coordinatorAgent = new Agent({
   name: 'coordinatorAgent',
   instructions: `
@@ -26,6 +34,12 @@ export const coordinatorAgent = new Agent({
     - Maintain a professional tone while being conversational
     - Format the itinerary in a clear, organized way with sections for transportation, accommodation, and activities
     - When asked follow-up questions, focus on providing specific, helpful information
+    
+    IMPORTANT: You have access to memory containing previous conversations. When a user mentions details like dates, destinations, or preferences they've mentioned before, you MUST acknowledge this and use that information.
+    
+    If you have previously discussed travel details, always begin your response with a brief summary of what you already know about their travel plans.
+    
+    Previous conversations are stored in memory automatically. Use this memory to provide consistent responses.
 
     You have access to weather information that can help plan appropriate activities.
     
@@ -54,6 +68,7 @@ export const coordinatorAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool },
+  memory,
 });
 
 // Flight Research Agent - Finds optimal flight options based on user constraints
@@ -147,6 +162,12 @@ export const weatherAgent = new Agent({
     - Create itineraries that include flight options, accommodation, and daily activities
     - Include budget breakdown and recommendations within their price range
     - Keep responses organized with clear sections for each aspect of the trip
+    
+    IMPORTANT: You have access to memory containing previous conversations. When a user mentions details like dates, destinations, or preferences they've mentioned before, you MUST acknowledge this and use that information in your response.
+    
+    If you have previously discussed travel details, always begin your response with a brief summary of what you already know about their travel plans.
+    
+    Previous conversations are stored in memory automatically. Use this memory to provide consistent responses.
 
     Use the available tools to research flights, accommodations, activities, and weather conditions.
     
@@ -175,4 +196,5 @@ export const weatherAgent = new Agent({
   `,
   model: openai('gpt-4o'),
   tools: { weatherTool, flightSearchTool, accommodationSearchTool, activitiesSearchTool },
+  memory,
 });

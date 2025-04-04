@@ -10,11 +10,17 @@ interface ItineraryModalProps {
   framework: Framework;
 }
 
-const ItineraryModal: React.FC<ItineraryModalProps> = ({ isOpen, onClose, itinerary, framework }) => {
+const ItineraryModal: React.FC<ItineraryModalProps> = ({
+  isOpen,
+  onClose,
+  itinerary,
+  framework,
+}) => {
   if (!isOpen || !itinerary) return null;
 
   return (
-    <div className="modal-overlay" 
+    <div
+      className="modal-overlay"
       style={{
         position: 'fixed',
         top: 0,
@@ -26,11 +32,12 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ isOpen, onClose, itiner
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1rem'
+        padding: '1rem',
       }}
       onClick={onClose}
     >
-      <div className="modal-content" 
+      <div
+        className="modal-content"
         style={{
           backgroundColor: 'var(--bg-card)',
           borderRadius: '0.5rem',
@@ -38,12 +45,12 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ isOpen, onClose, itiner
           width: '900px',
           maxHeight: '90vh',
           overflow: 'auto',
-          position: 'relative'
+          position: 'relative',
         }}
         onClick={e => e.stopPropagation()}
       >
-        <button 
-          className="modal-close" 
+        <button
+          className="modal-close"
           onClick={onClose}
           style={{
             position: 'absolute',
@@ -53,12 +60,12 @@ const ItineraryModal: React.FC<ItineraryModalProps> = ({ isOpen, onClose, itiner
             border: 'none',
             cursor: 'pointer',
             color: 'var(--text-primary)',
-            zIndex: 10
+            zIndex: 10,
           }}
         >
           <X size={24} />
         </button>
-        
+
         <div style={{ padding: '1rem' }}>
           <ItineraryDisplay itinerary={itinerary} framework={framework} />
         </div>
