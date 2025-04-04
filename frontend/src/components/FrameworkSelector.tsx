@@ -6,20 +6,18 @@ interface FrameworkSelectorProps {
   onFrameworkChange: (framework: Framework) => void;
 }
 
-const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({ 
-  selectedFramework, 
-  onFrameworkChange 
+const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
+  selectedFramework,
+  onFrameworkChange,
 }) => {
   return (
     <div className="framework-badges">
       <FrameworkBadge
-        framework="pydantic-ai"
-        label="Pydantic AI"
-        selected={selectedFramework === 'pydantic-ai'}
-        onClick={() => onFrameworkChange('pydantic-ai')}
-        className="badge-pydantic"
-        disabled={true}
-        comingSoon={true}
+        framework="mastra-ai"
+        label="Mastra AI"
+        selected={selectedFramework === 'mastra-ai'}
+        onClick={() => onFrameworkChange('mastra-ai')}
+        className="badge-mastra"
       />
       <FrameworkBadge
         framework="openai-agents"
@@ -31,11 +29,13 @@ const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         comingSoon={true}
       />
       <FrameworkBadge
-        framework="mastra-ai"
-        label="Mastra AI"
-        selected={selectedFramework === 'mastra-ai'} 
-        onClick={() => onFrameworkChange('mastra-ai')}
-        className="badge-mastra"
+        framework="pydantic-ai"
+        label="Pydantic AI"
+        selected={selectedFramework === 'pydantic-ai'}
+        onClick={() => onFrameworkChange('pydantic-ai')}
+        className="badge-pydantic"
+        disabled={true}
+        comingSoon={true}
       />
     </div>
   );
@@ -58,7 +58,7 @@ const FrameworkBadge: React.FC<FrameworkBadgeProps> = ({
   onClick,
   className,
   disabled = false,
-  comingSoon = false
+  comingSoon = false,
 }) => {
   return (
     <button
@@ -69,13 +69,15 @@ const FrameworkBadge: React.FC<FrameworkBadgeProps> = ({
       style={{
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.7 : 1,
-        padding: '0.4rem 0.6rem'
+        padding: '0.4rem 0.6rem',
       }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <span>{label}</span>
         {comingSoon && (
-          <span className="coming-soon-badge">Coming Soon</span>
+          <span className="coming-soon-badge" style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>
+            Coming Soon
+          </span>
         )}
       </div>
     </button>

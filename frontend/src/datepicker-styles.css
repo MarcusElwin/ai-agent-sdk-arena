@@ -53,8 +53,8 @@
   opacity: 0.6;
 }
 
-.react-datepicker__current-month, 
-.react-datepicker-time__header, 
+.react-datepicker__current-month,
+.react-datepicker-time__header,
 .react-datepicker-year-header,
 .react-datepicker__day-name {
   color: var(--text-primary) !important;
