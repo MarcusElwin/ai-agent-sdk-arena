@@ -1,11 +1,11 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 import os
-import dotenv
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
+import dotenv
 # Import agent modules
 from app.agents.coordinator import CoordinatorAgent
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables
 dotenv.load_dotenv()
@@ -21,9 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def health_check():
     return {"status": "ok", "framework": "openai-agents-sdk"}
+
 
 @app.post("/plan")
 async def create_travel_plan(request: Dict[str, Any]):
@@ -34,19 +36,19 @@ async def create_travel_plan(request: Dict[str, Any]):
         end_date = request.get("endDate")
         budget = request.get("budget")
         preferences = request.get("preferences", {})
-        
+
         # Initialize the coordinator agent
         coordinator = CoordinatorAgent()
-        
+
         # Process the request through the coordinator
         result = await coordinator.plan_trip(
             destination=destination,
             start_date=start_date,
             end_date=end_date,
             budget=budget,
-            preferences=preferences
+            preferences=preferences,
         )
-        
+
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
