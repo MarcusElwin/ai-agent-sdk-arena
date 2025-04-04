@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 
 jobs:
   build-frontend:
@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./frontend
 
       - name: Lint
@@ -55,7 +55,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./backend/mastra-ai
 
       - name: Build backend
