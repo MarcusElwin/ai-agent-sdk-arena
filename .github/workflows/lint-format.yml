@@ -2,9 +2,9 @@ name: Lint and Format
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 
 jobs:
   js-lint-format:
@@ -26,11 +26,11 @@ jobs:
         working-directory: .
 
       - name: Install dependencies (frontend)
-        run: npm ci
+        run: npm install
         working-directory: ./frontend
 
       - name: Install dependencies (mastra-ai)
-        run: npm ci
+        run: npm install
         working-directory: ./backend/mastra-ai
 
       - name: Check formatting (prettier)
