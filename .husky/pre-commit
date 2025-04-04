@@ -11,7 +11,7 @@ if [ -d "$REPO_ROOT/backend" ]; then
   # Format Python files if tools are available
   if command -v black >/dev/null 2>&1; then
     echo "Formatting Python files with black..."
-    cd "$REPO_ROOT" && black --quiet backend || true
+    cd "$REPO_ROOT" && black backend || true
   fi
 
   if command -v isort >/dev/null 2>&1; then
