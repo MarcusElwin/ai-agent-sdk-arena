@@ -260,6 +260,11 @@ Always begin your response with a brief summary of what you already know about m
     let fullResponse = "";
     
     try {
+      // Check if stream method is available
+      if (typeof agent.stream !== 'function') {
+        throw new Error("Agent doesn't have stream method");
+      }
+      
       // Use the stream method with proper message format and tracking options
       const stream = await agent.stream(
         { 
@@ -268,6 +273,11 @@ Always begin your response with a brief summary of what you already know about m
           resourceId: resourceId
         }
       );
+      
+      // Safety check for stream existence
+      if (!stream || !stream.textStream) {
+        throw new Error("Stream or textStream not available");
+      }
       
       // Use textStream as shown in the docs
       for await (const chunk of stream.textStream) {
@@ -280,11 +290,10 @@ Always begin your response with a brief summary of what you already know about m
       console.warn("stream method failed, falling back to regular generate:", streamError);
       
       // Fall back to non-streaming generate if streaming fails
-      // Ensure message format is correct for Vercel AI SDK
       const response = await agent.generate({
         messages: [{ role: "user", content: prompt }],
-        sessionId: sessionId
-        // Context removed to fix prompt error
+        threadId: threadId,
+        resourceId: resourceId
       });
       
       const finalResponse = response.text || "I'm sorry, I couldn't process your request.";
