@@ -1,22 +1,27 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/usr/bin/env bash
 
 # Format and lint JavaScript/TypeScript files
-cd frontend && npm run format-staged
+cd "$(git rev-parse --show-toplevel)" && npm run format-staged
 
-# Format Python files if tools are available
-if command -v black >/dev/null 2>&1; then
-  echo "Formatting Python files with black..."
-  black --quiet backend/
-fi
+# Get the repository root directory
+REPO_ROOT=$(git rev-parse --show-toplevel)
 
-if command -v isort >/dev/null 2>&1; then
-  echo "Sorting Python imports with isort..."
-  isort --quiet backend/
-fi
+# Check if the backend directory exists before running Python tools
+if [ -d "$REPO_ROOT/backend" ]; then
+  # Format Python files if tools are available
+  if command -v black >/dev/null 2>&1; then
+    echo "Formatting Python files with black..."
+    cd "$REPO_ROOT" && black --quiet backend || true
+  fi
 
-if command -v flake8 >/dev/null 2>&1; then
-  echo "Linting Python files with flake8..."
-  # Set to exit with success (warnings only)
-  flake8 backend/ || true
+  if command -v isort >/dev/null 2>&1; then
+    echo "Sorting Python imports with isort..."
+    cd "$REPO_ROOT" && isort --quiet backend || true
+  fi
+
+  if command -v flake8 >/dev/null 2>&1; then
+    echo "Linting Python files with flake8..."
+    # Set to exit with success (warnings only)
+    cd "$REPO_ROOT" && flake8 backend || true
+  fi
 fi
